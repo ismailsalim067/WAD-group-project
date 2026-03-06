@@ -39,8 +39,6 @@ source .venv/bin/activate
 .\.venv\Scripts\Activate.ps1
 
 4) Install dependencies
-   
-We will add a `requirements.txt` file to the repo. Once it’s available, install dependencies with:
 
 pip install -r requirements.txt
 
