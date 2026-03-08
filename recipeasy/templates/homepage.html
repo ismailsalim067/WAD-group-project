@@ -1,99 +1,217 @@
 <!DOCTYPE html>
 <html>
-
-<style>
-    .topRatedMeals {
-        width: 65%;
-        padding: 20px;
-        border: 2px solid black;
-    }
-
-    .header {
-        align-items: center;
-        display: flex;
-        gap: 50px;
-    }
-
-    .header h3 {
-        font-size: 30px;
-    }
-
-    .searchbar {
-        display: flex;
-    }
-
-    .searchbar input {
-        width: 120px;
-        padding: 6px;
-        font-size: 14px;
-    }
-
-    .searchbar button {
-        padding: 6px;
-        cursor: pointer;
-    }
-
-    .images {
-        display: flex;
-        gap: 30px;
-    }
-
-    .mealCard {
-        border: 2px solid black;
-        padding: 10px;
-        text-align: center;
-    }
-
-    .mealCard img {
-        width: 175px;
-        height: 120px;
-    }
-
-    .stars {
-        color: orange;
-        font-size: 18px;
-    }
-
-</style>
-
 <head>
     <title>RecipEasy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+
+        .page {
+            height: 100vh;
+        }
+
+        .sidebar {
+            padding:35px;
+            border-left: 1px solid black;
+            height: 100vh;
+            font-size: 18px;
+        }
+
+        .sidebar h5 {
+            font-size: 24px;
+            margin-top: 25px;
+        }
+
+        .section {
+            height: 50%;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .search-bar c{
+            position: absolute;
+            left: 0;
+            width: 280px;
+        }
+
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recent-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recent-card {
+            text-align: center;
+        }
+
+        .button-area {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .big-btn {
+            font-size: 20px;
+            padding: 12px 30px;
+        }
+
+    </style>
+
 </head>
 
 <body>
-    <div class="topRatedMeals">
-        <div class="header">
-            <form class="searchbar">
-                <input type = "text" placeholder="Search.." name="search">
-                <button type="submit">🔍</button>
+<div class="container-fluid page">
+    <div class="row h-100">
+        <div class="col-md-9 d-flex flex-column">
+
+            <div class="section">
+            <div class="header-row">
+
+            <form class="d-flex search-bar">
+                <input class="form-control me-2" type="search" placeholder="Search">
+                <button class="btn btn-primary">
+                <i class="bi bi-search"></i>
+                </button>
             </form>
 
-        <h3>Top Rated Meals</h3>
+            <h2>Top Rated Meals</h2>
 
-        </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="card-img-top">
+                        <div class="card-body text-center">
+                            ⭐⭐⭐⭐⭐
+                            <p>Pepperoni Pizza</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="card-img-top">
+                        <div class="card-body text-center">
+                            ⭐⭐⭐⭐⭐
+                            <p>Chorizo Fried Rice</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="card-img-top">
+                        <div class="card-body text-center">
+                            ⭐⭐⭐⭐
+                            <p>Chow Mein</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+
+<div class="section">
+<h2 class="text-center mb-4">My Recent Uploads</h2>
+
+<div class="row g-4">
+    <div class="col-md-3">
+    <div class="recent-card">
+        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <p>Spaghetti Bolognaise</p>
+    </div>
     </div>
 
-    <div class="images">
-
-        <div class="mealCard">
-            <img src="C:\Users\zoest\Downloads\pizza.jpg">
-            <div class="stars">★★★★★</div>
-            <p>Pepperoni Pizza</p>
-        </div>
-
-        <div class="mealCard">
-            <img src="C:\Users\zoest\Downloads\chorizo.jpg">
-            <div class="stars">★★★★★</div>
-            <p>Chorizo Fried Rice</p>
-        </div>
-
-        <div class="mealCard">
-            <img src="C:\Users\zoest\Downloads\chowmein.jpg">
-            <div class="stars">★★★★</div>
-            <p>Chicken Chow Mein</p>
-        </div>
-
+    <div class="col-md-3">
+    <div class="recent-card">
+        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <p>Chicken Korma</p>
     </div>
-    
+    </div>
+
+    <div class="col-md-3">
+    <div class="recent-card">
+        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <p>Chicken Fajitas</p>
+    </div>
+    </div>
+
+    <div class="col-md-3">
+    <div class="recent-card">
+        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <p>Tomato Soup</p>
+    </div>
+    </div>
+
+    <div class="col-md-3">
+    <div class="recent-card">
+        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <p>Scrambled Eggs</p>
+    </div>
+    </div>
+
+    <div class="col-md-3">
+    <div class="recent-card">
+        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <p>Steak</p>
+    </div>
+    </div>
+
+</div>
+
+<div class="button-area">
+    <button class="btn btn-primary big-btn">Add Recipe</button>
+    <button class="btn btn-secondary big-btn">All My Uploads</button>
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3 sidebar">
+    <p><b>Account:</b> user123 
+    <button class="btn btn-sm btn-outline-dark">Sign Out</button></p>
+
+    <h5>Categories</h5>
+    <ul>
+        <li>Breakfast</li>
+        <li>Lunch</li>
+        <li>Dinner</li>
+        <li>Easy</li>
+        <li>Medium</li>
+        <li>Difficult</li>
+        <li>My Saved Recipes</li>
+    </ul>
+        
+    <h5>My Stats</h5>
+        <p>⭐☆☆☆☆ 3 Ratings</p>
+        <p>⭐⭐☆☆☆ 28 Ratings</p>
+        <p>⭐⭐⭐☆☆ 13 Ratings</p>
+        <p>⭐⭐⭐⭐☆ 23 Ratings</p>
+        <p>⭐⭐⭐⭐⭐ 33 Ratings</p>
+
+        <p><b>Total Ratings Received:</b> 100</p>
+        <p><b>Total Ratings Given:</b> 5</p>
+</div>
+</div>
+</div>
+
 </body>
 </html>
