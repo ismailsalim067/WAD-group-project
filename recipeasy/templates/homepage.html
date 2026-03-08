@@ -36,13 +36,20 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 100px;
         }
 
         .search-bar c{
             position: absolute;
             left: 0;
+            top: 50%;
+            transform: translateY(-50%);
             width: 280px;
+        }
+
+        .header-title {
+            margin: 0 auto;
+            text-align: center;
         }
 
         .card img {
@@ -57,6 +64,10 @@
 
         .recent-card {
             text-align: center;
+        }
+
+        .recent-card p {
+            font-size: 24px;
         }
 
         .button-area {
@@ -90,7 +101,7 @@
                 </button>
             </form>
 
-            <h2>Top Rated Meals</h2>
+            <h1 class="header-title">Top Rated Meals</h1>
 
             </div>
 
@@ -129,7 +140,7 @@
             </div>
 
 <div class="section">
-<h2 class="text-center mb-4">My Recent Uploads</h2>
+<h1 class="text-left mb-4">My Recent Uploads</h1>
 
 <div class="row g-4">
     <div class="col-md-3">
@@ -177,8 +188,8 @@
 </div>
 
 <div class="button-area">
-    <button class="btn btn-primary big-btn">Add Recipe</button>
-    <button class="btn btn-secondary big-btn">All My Uploads</button>
+    <button class="btn big-btn btn-outline-dark">Add Recipe</button>
+    <button class="btn big-btn btn-outline-dark">All My Uploads</button>
 </div>
 
 </div>
