@@ -8,27 +8,54 @@
     <style>
 
         .page {
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .sidebar {
-            padding:35px;
+            padding: 2rem;
             border-left: 1px solid black;
-            height: 100vh;
-            font-size: 18px;
+            height: 100%;
+            font-size: clamp(16px, 1.2vw, 28px);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .sidebar h5 {
-            font-size: 24px;
-            margin-top: 25px;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar p {
+            font-size: 1em;
+        }
+        
+        .sidebar li {
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        .sidebar ul {
+            list-style-position: inside;
+            text-align: left;
+            display: table;
+            padding-left: 0;
+            margin: 0 auto 40px auto;
+        }
+
+        .sidebar button {
+            font-size: 1em;
         }
 
         .section {
-            height: 50%;
-            padding: 35px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            padding: 40px;
+        }
+
+        .section h1 {
+            margin-bottom: 20px;
+            margin-top: 30px;
         }
 
         .header-row {
@@ -39,17 +66,21 @@
             margin-bottom: 100px;
         }
 
-        .search-bar c{
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 280px;
+        .search-bar {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .search-bar button {
+            font-size: 1.3rem;
+            padding: 12px 18px;
         }
 
         .header-title {
             margin: 0 auto;
             text-align: center;
+            font-size: clamp(28px, 2.5vw, 48px);
+            font-weight: 600;
         }
 
         .card img {
@@ -74,12 +105,54 @@
             margin-top: auto;
             display: flex;
             justify-content: flex-end;
-            gap: 15px;
+            gap: 20px;
         }
 
         .big-btn {
-            font-size: 20px;
-            padding: 12px 30px;
+            font-size: 1.4rem;
+            padding: 14px 32px;
+            border-radius: 8px;
+        }
+
+        .account-row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .account-name {
+            width: 50%;
+            display: flex;
+            align-items: center;
+        }
+
+        .signout-btn {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .signout-btn button {
+            width: 80%;
+        }
+
+        .search-input {
+            font-size: 1.3rem;
+            padding: 12px 16px;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                font-size: 1.4rem;
+            }
         }
 
     </style>
@@ -92,16 +165,16 @@
         <div class="col-md-9 d-flex flex-column">
 
             <div class="section">
-            <div class="header-row">
+            <div class="header-row d-flex justify-content-between align-items-center flex-wrap">
 
             <form class="d-flex search-bar">
-                <input class="form-control me-2" type="search" placeholder="Search">
+                <input class="form-control me-2 search-input" type="search" placeholder="Search">
                 <button class="btn btn-primary">
                 <i class="bi bi-search"></i>
                 </button>
             </form>
 
-            <h1 class="header-title">Top Rated Meals</h1>
+            <h1 class="header-title flex-grow-1 text-center">Top Rated Meals</h1>
 
             </div>
 
@@ -196,9 +269,16 @@
 
 </div>
 
-<div class="col-md-3 sidebar">
-    <p><b>Account:</b> user123 
-    <button class="btn btn-sm btn-outline-dark">Sign Out</button></p>
+<div class="col-lg-3 col-md-4 sidebar">
+    <div class="account-row">
+    <div class="account-name">
+        <b>Account: </b> user123 
+    </div>
+
+    <div class="signout-btn">
+        <button class="btn btn-outline-dark">Sign Out</button>
+    </div>
+    </div>
 
     <h5>Categories</h5>
     <ul>
