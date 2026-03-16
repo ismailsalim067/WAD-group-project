@@ -17,6 +17,15 @@ def redirect_to_homepage(request):
 def create_recipe(request):
     return HttpResponse("Create Recipe view")
 
+def login(request):
+    return render(request, "login.html")
+
+def signup(request):
+    return render(request, "signup.html")
+
+def my_recipes(request):
+    return HttpResponse("my recipes page")
+
 
 
 
