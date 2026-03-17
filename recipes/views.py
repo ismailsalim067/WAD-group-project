@@ -4,11 +4,12 @@ from .models import Recipes
 
 
 
+
 # Create your views here.
 
 def home(request):
     #return render(request)
-    return HttpResponse("Recipes Home page")
+    return render(request, "homepage.html")
 
 def redirect_to_homepage(request):
     return redirect("homepage/")
