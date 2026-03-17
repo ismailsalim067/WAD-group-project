@@ -1,4 +1,4 @@
-from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -45,6 +45,17 @@ def create_recipe(request):
 
 
 def login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            return redirect("/homepage/")
+
+        return render(request, "login.html", {"error": "Invalid username or password."})
+
     return render(request, "login.html")
 
 
