@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
-from .forms import SignUpForm
+from .forms import RecipeForm, SignUpForm
 from .models import Recipes
 
 
@@ -18,30 +19,22 @@ def redirect_to_homepage(request):
 
 
 @login_required
+@csrf_exempt
 def create_recipe(request):
     if request.method == "POST":
-        name = request.POST.get("name")
-        description = request.POST.get("description")
-        cuisine = request.POST.get("cuisine")
-        difficulty = request.POST.get("difficulty")
-        cooking_time = request.POST.get("cooking_time")
-        ingredients = request.POST.get("ingredients")
-        instructions = request.POST.get("instructions")
+        form = RecipeForm(request.POST)
 
-        recipe = Recipes.objects.create(
-            author=request.user,
-            name=name,
-            description=description,
-            cuisine=cuisine,
-            difficulty=difficulty,
-            cooking_time=cooking_time,
-            ingredients=ingredients,
-            instructions=instructions,
-        )
+        if form.is_valid():
+            recipe = form.save(commit=False)
+            recipe.author = request.user
+            recipe.save()
 
-        return HttpResponse(f"Recipe {recipe.name} created")
+            return redirect('recipes:recipe_detail', id=recipe.id)
+        
+    else:        
+        form = RecipeForm()
 
-    return HttpResponse("Waiting for recipe submission")
+    return render(request, "create_recipe.html", {'form':form})
 
 
 def login(request):
@@ -76,6 +69,11 @@ def signup(request):
 def my_recipes(request):
     user_recipes = Recipes.objects.filter(author=request.user)
     return HttpResponse(f"You have {user_recipes.count()} recipe(s).")
+
+def recipe_detail(request, id):
+    recipe = get_object_or_404(Recipes, id=id)
+
+    return render(request, "recipe_detail.html", {'recipe':recipe})
 
 
 def logout_view(request):
