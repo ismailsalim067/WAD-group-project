@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easy Recipes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      position: relative;
+      min-height: 100vh;
+      padding-top: 100px;
+    }
+
+    h1.title {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 4rem;
+      font-weight: bold;
+    }
+
+    .top-buttons {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .home-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .card img {
+      height: 150px;
+      object-fit: cover;
+      border: 2px solid black;
+    }
+
+    .card {
+      border: 1px solid black;
+      text-align: center;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1 class="title">Easy Recipes</h1>
+
+  <div class="top-buttons">
+    <button class="btn btn-outline-dark me-2">Sign In</button>
+    <button class="btn btn-outline-dark">Sign Out</button>
+  </div>
+
+  <div class="container mt-4">
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card">
+          <img src="" class="card-img-top">
+          <div class="card-body p-2">
+            <p class="card-text">Chicken Korma</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <img src="" class="card-img-top">
+          <div class="card-body p-2">
+            <p class="card-text">Tomato Soup</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <img src="" class="card-img-top">
+          <div class="card-body p-2">
+            <p class="card-text">Scrambled Eggs</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <img src="" class="card-img-top">
+          <div class="card-body p-2">
+            <p class="card-text">Spaghetti Bolognese</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="home-button">
+    <button class="btn btn-outline-dark">Home</button>
+  </div>
+
+</body>
+</html>

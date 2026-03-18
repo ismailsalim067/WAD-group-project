@@ -6,9 +6,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-
         .page {
-            min-height: 100vh;
+            overflow-x: auto;
         }
 
         .sidebar {
@@ -20,6 +19,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-width:220px;
         }
 
         .sidebar h5 {
@@ -50,7 +50,8 @@
         }
 
         .section {
-            padding: 40px;
+            padding: 20px;
+            overflow: hidden;
         }
 
         .section h1 {
@@ -63,7 +64,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            margin-bottom: 100px;
+            margin-bottom: 20px;
         }
 
         .search-bar {
@@ -84,12 +85,12 @@
         }
 
         .card img {
-            height: 200px;
+            height: 180px;
             object-fit: cover;
         }
 
         .recent-card img {
-            height: 200px;
+            height: 150px;
             object-fit: cover;
         }
 
@@ -98,7 +99,7 @@
         }
 
         .recent-card p {
-            font-size: 24px;
+            font-size: 18px;
         }
 
         .button-area {
@@ -116,26 +117,19 @@
 
         .account-row {
             display: flex;
-            width: 100%;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
             align-items: center;
         }
 
         .account-name {
-            width: 50%;
-            display: flex;
-            align-items: center;
+            flex: 1 1 150px;
         }
 
         .signout-btn {
-            width: 50%;
             display: flex;
-            align-items: center;
             justify-content: flex-end;
-        }
-
-        .signout-btn button {
-            width: 100%;
+            flex: 1 1 120px;
         }
 
         .search-input {
@@ -155,16 +149,31 @@
             }
         }
 
+        @media (max-width: 500px) {
+            .account-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .signout-btn {
+                width: 100%;
+            }
+
+            .signout-btn button {
+                width: 100%;
+            }
+        }
+
     </style>
 
 </head>
 
 <body>
 <div class="container-fluid page">
-    <div class="row h-100">
-        <div class="col-md-9 d-flex flex-column px-0">
+    <div class="row flex-nonwrap">
+        <div class="col-9 d-flex flex-column px-0" style="height: 100vh;">
 
-            <div class="section border-bottom px-4">
+            <div class="section border-bottom px-4 d-flex flex-column" style="flex: 1;">
             <div class="header-row d-flex justify-content-between align-items-center flex-wrap">
 
             <form class="d-flex search-bar">
@@ -182,7 +191,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
-                        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="card-img-top">
+                        <img src="" class="card-img-top">
                         <div class="card-body text-center">
                             ⭐⭐⭐⭐⭐
                             <p>Pepperoni Pizza</p>
@@ -192,7 +201,7 @@
 
                 <div class="col-md-4">
                     <div class="card">
-                        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="card-img-top">
+                        <img src="" class="card-img-top">
                         <div class="card-body text-center">
                             ⭐⭐⭐⭐⭐
                             <p>Chorizo Fried Rice</p>
@@ -202,7 +211,7 @@
 
                 <div class="col-md-4">
                     <div class="card">
-                        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="card-img-top">
+                        <img src="" class="card-img-top">
                         <div class="card-body text-center">
                             ⭐⭐⭐⭐
                             <p>Chow Mein</p>
@@ -213,49 +222,28 @@
             </div>
             </div>
 
-<div class="section">
+<div class="section d-flex flex-column" style="flex: 1;">
 <h1 class="text-left mb-4">My Recent Uploads</h1>
 
 <div class="row g-4">
-    <div class="col-md-3">
+    <div class="col-md-4">
     <div class="recent-card card text-center">
-        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <img src="" class="img-fluid">
         <p>Spaghetti Bolognaise</p>
     </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
     <div class="recent-card card text-center">
-        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <img src="" class="img-fluid">
         <p>Chicken Korma</p>
     </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
     <div class="recent-card card text-center">
-        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
+        <img src="" class="img-fluid">
         <p>Chicken Fajitas</p>
-    </div>
-    </div>
-
-    <div class="col-md-3">
-    <div class="recent-card card text-center">
-        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
-        <p>Tomato Soup</p>
-    </div>
-    </div>
-
-    <div class="col-md-3">
-    <div class="recent-card card text-center">
-        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
-        <p>Scrambled Eggs</p>
-    </div>
-    </div>
-
-    <div class="col-md-3">
-    <div class="recent-card card text-center">
-        <img src="C:\Users\zoest\Downloads\pizza.jpg" class="img-fluid">
-        <p>Steak</p>
     </div>
     </div>
 
@@ -277,14 +265,14 @@
 
 </div>
 
-<div class="col-lg-3 col-md-4 sidebar px-0">
+<div class="col-3 sidebar px-0">
     <div class="account-row border-bottom px-0 pb-3">
     <div class="account-name px-4">
         <b>Account:</b><span class="ms-2">user123</span> 
     </div>
 
     <div class="signout-btn px-4">
-        <button class="btn btn-outline-dark">Sign Out</button>
+        <a href="{% url 'recipes:logout' %}" class="btn btn-outline-dark">Sign Out</a>
     </div>
     </div>
 
