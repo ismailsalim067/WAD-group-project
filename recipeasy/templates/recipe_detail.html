@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <h1>{{ recipe.name }}</h1>
+
+        <p><strong>Author:</strong> {{ recipe.author.username }}</p>
+        <p><strong>Description:</strong> {{ recipe.description }}</p>
+        <p><strong>Cuisine:</strong> {{ recipe.get_cuisine_display }}</p>
+        <p><strong>Difficulty:</strong> {{ recipe.get_difficulty_display }}</p>
+        <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
+
+        <h3>Ingredients</h3>
+        <p>{{ recipe.ingredients }}</p>
+
+        <h3>Instructions</h3>
+        <p>{{ recipe.instructions }}</p>
+</html>
