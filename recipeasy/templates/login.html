@@ -12,18 +12,24 @@
                 <h1 class="text-center mb-4">RecipEasy</h1>
                 <h3 class="text-center mb-4">Login</h3>
 
-                <form>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter password">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
                     </div>
 
-                    <button class="btn btn-success w-100">Login</button>
+                    <button class="btn btn-success w-100" type="submit">Login</button>
 
                     <p class="text-center mt-3">
                         Don't have an account? <a href="/signup/" class="text-success text-decoration-none fw-bold">Sign up</a>

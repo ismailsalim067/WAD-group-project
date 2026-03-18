@@ -11,20 +11,27 @@
 
                 <h2 class="text-center mb-4">Create Account</h2>
 
-                <form>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            Please fix the errors below.
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter password">
+                        <input type="password" class="form-control" id="password" name="password1" placeholder="Enter password">
                     </div>
 
                     <div class="mb-3">
                         <label for="confirm_password" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm_password" placeholder="Confirm password">
+                        <input type="password" class="form-control" id="confirm_password" name="password2" placeholder="Confirm password">
                     </div>
 
                     <button class="btn btn-success w-100">Sign Up</button>

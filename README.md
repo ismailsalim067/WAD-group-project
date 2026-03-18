@@ -16,41 +16,67 @@ The app is designed around quick, practical cooking for students — helping use
 
 To run RecipEasy locally, follow the steps below. Please make sure you have Python 3.11 installed.
 
-1) Clone the repository
+1. **Clone the repository**
 
+```bash
 git clone https://github.com/ismailsalim067/recipeasy.git
 cd recipeasy
+```
 
-2) Create a virtual environment
+2. **Create a virtual environment**
 
 **macOS/Linux**
+```bash
 python3 -m venv .venv
+```
 
 **Windows**
+```bash
 py -m venv .venv
+```
 
-3) Activate the virtual environment  
+3. **Activate the virtual environment**  
 You’ll need to do this each time you reopen the project.
 
 **macOS/Linux**
+```bash
 source .venv/bin/activate
+```
 
-**Windows(Powershell)**
+**Windows (PowerShell)**
+```powershell
 .\.venv\Scripts\Activate.ps1
+```
 
-4) Install dependencies
+4. **Install dependencies**
 
+```bash
 pip install -r requirements.txt
+```
 
-5) Run the server
+5. **Run migrations**
 
+```bash
 python manage.py migrate
+```
+
+6. **Run the server**
+
+```bash
 python manage.py runserver
+```
 
 To run tests:
-python manage.py test
 
-Open: http://127.0.0.1:8000
+```bash
+python manage.py test
+```
+
+Open in browser:
+
+```text
+http://127.0.0.1:8000
+```
 
 ## Git Workflow
 
@@ -58,25 +84,30 @@ Our `main` branch is protected. Changes should be made on a separate branch and 
 
 ### How to build a feature
 
-1) Create a new branch for your task  
-Choose a short, descriptive name (e.g., `feature/recipe-search`, `fix/login-form`).
+1. **Create a new branch for your task**  
+   Choose a short, descriptive name (e.g. `feature/recipe-search`, `fix/login-form`).
 
+```bash
 git checkout main
 git pull
-git checkout -b feature/<branch-name>
+git checkout -b feature/your-branch-name
+```
 
-2) Make your changes and commit regularly
+2. **Make your changes and commit regularly**
 
-git add . 
-git commit -m "Quick description of what you changed"
+```bash
+git add .
+git commit -m "Short description of what you changed"
+```
 
-3) Push your branch to GitHub
+3. **Push your branch to GitHub**
 
-git push -u origin feature/<branch-name>
+```bash
+git push -u origin feature/your-branch-name
+```
 
-4) Open a PR from your branch -> main
-   Request a teammate to review and approve your code before merging it into the main branch.
-   When merging, choose **Squash and merge**
+4. **Open a Pull Request**  
+   Open a PR from your branch to `main`. Request a teammate to review and approve your code before merging. When merging, choose **Squash and merge**.
 
 ## Acknowledgements & External Sources
 

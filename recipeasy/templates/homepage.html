@@ -168,6 +168,7 @@
             <div class="header-row d-flex justify-content-between align-items-center flex-wrap">
 
             <form class="d-flex search-bar">
+                {% csrf_token %}
                 <input class="form-control me-2 search-input" type="search" placeholder="Search">
                 <button class="btn btn-primary">
                 <i class="bi bi-search"></i>
@@ -261,8 +262,15 @@
 </div>
 
 <div class="button-area">
-    <button class="btn big-btn btn-outline-dark">Add Recipe</button>
-    <button class="btn big-btn btn-outline-dark">All My Uploads</button>
+    <a href="{% url 'recipes:createrecipe' %}" class="btn big-btn btn-outline-dark">
+        Add Recipe
+    </a>
+
+    <a href="{% url 'recipes:myrecipes' %}" class="btn big-btn btn-outline-dark">
+        All My Uploads
+    </a>
+    
+
 </div>
 
 </div>
