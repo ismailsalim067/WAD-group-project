@@ -34,7 +34,7 @@ def create_recipe(request):
     else:        
         form = RecipeForm()
 
-    return render(request, "create_recipe.html", {'form':form})
+    return render(request, "createrecipe.html", {'form':form})
 
 
 def login(request):
