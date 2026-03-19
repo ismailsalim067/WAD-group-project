@@ -24,35 +24,42 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <span class="me-3">Account: {{ username }}</span>
-                <a href="/signout/" class="btn btn-outline-success">Sign out</a>
+                <a href="{% url 'recipes:logout' %}" class="btn btn-outline-success">Sign out</a>
             </div>
 
             <h2 class="mb-4">Create Recipe</h2>
 
-            <div class="row">
-                <div class="col-md-7">
+            <form method="POST">
+                {% csrf_token %}
 
-                    <form>
+                <div class="row">
+                    <div class="col-md-7">
+
                         <div class="mb-2">
                             <label for="recipe_name" class="form-label">Recipe Name:</label>
-                            <input type="text" class="form-control" id="recipe_name" placeholder="Enter recipe name">
+                            <input name="name" type="text" class="form-control" id="recipe_name" placeholder="Enter recipe name">
                         </div>
 
                         <div class="mb-2">
                             <label for="description" class="form-label">Description:</label>
-                            <textarea class="form-control" id="description" rows="3" placeholder="Write a brief description"></textarea>
+                            <textarea name="description" class="form-control" id="description" rows="3" placeholder="Write a brief description"></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4 mb-2">
-                                <label for="cuisine" class="form-label">Cuisine:</label>
-                                <input type="text" class="form-control" id="cuisine" placeholder="e.g. Italian">
+                                <label for="cuisine" class="form-label">Cuisine:</label><br>
+                                <select name="cuisine" class="form-select" aria-label="Default select example">
+                                    <option value="italian">Italian</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="mexican">Mexican</option>
+                                    <option value="chinese">Chinese</option>
+                                    <option value="other">Other</option>
+                                </select><br><br>
                             </div>
 
                             <div class="col-md-4 mb-2">
                                 <label for="difficulty" class="form-label">Difficulty:</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>--Select difficulty--</option>
+                                <select name="difficulty" class="form-select" aria-label="Default select example">
                                     <option value="easy">Easy</option>
                                     <option value="medium">Medium</option>
                                     <option value="hard">Hard</option>
@@ -61,32 +68,30 @@
 
                             <div class="col-md-4 mb-2">
                                 <label for="cook_time" class="form-label">Cooking Time (minutes):</label>
-                                <input type="number" class="form-control" id="cook_time" placeholder="e.g. 30">
+                                <input name="cooking_time" type="number" class="form-control" id="cook_time" placeholder="e.g. 30">
                             </div>
                         </div>
 
                         <div class="mb-2">
                             <label for="ingredients" class="form-label">Ingredients:</label>
-                            <textarea class="form-control" id="ingredients" rows="6" placeholder="List ingredients"></textarea>
+                            <textarea name="ingredients" class="form-control" id="ingredients" rows="6" placeholder="List ingredients"></textarea>
                         </div>
 
                         <div class="mb-2">
                             <label for="instructions" class="form-label">Instructions:</label>
-                            <textarea class="form-control" id="instructions" rows="6" placeholder="Write step-by-step instructions"></textarea>
+                            <textarea name="instructions" class="form-control" id="instructions" rows="6" placeholder="Write step-by-step instructions"></textarea>
                         </div>
 
-                    </form>
-                </div>
-
-                <div class="col-md-5">
-                    <div class="mb-2">
-                        <label for="image" class="form-label">Upload Image:</label>
-                        <input type="file" class="form-control" id="image" placeholder="Upload image (optional)">
                     </div>
 
-                    <div class="container">
+                    <div class="col-md-5">
                         <div class="mb-2">
-                            <button class="btn btn-success w-100">Create Recipe</button>
+                            <label for="image" class="form-label">Upload Image:</label>
+                            <input name="image" type="file" class="form-control" id="image" placeholder="Upload image (optional)">
+                        </div>
+
+                        <div class="mb-2">
+                            <button type="submit" class="btn btn-success w-100">Create Recipe</button>
                         </div>
 
                         <div class="button">
@@ -94,8 +99,8 @@
                         </div>
                     </div>
                 </div>
+            </form>
 
-            </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
