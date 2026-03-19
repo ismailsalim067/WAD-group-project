@@ -176,49 +176,38 @@
             <div class="section border-bottom px-4 d-flex flex-column" style="flex: 1;">
             <div class="header-row d-flex justify-content-between align-items-center flex-wrap">
 
-            <form class="d-flex search-bar">
-                {% csrf_token %}
-                <input class="form-control me-2 search-input" type="search" placeholder="Search">
-                <button class="btn btn-primary">
+            <form class="d-flex search-bar" method="get">
+                <input class="form-control me-2 search-input" type="search" name="q" value="{{ query }}" placeholder="Search">
+                <button class="btn btn-primary" type="submit">
                 <i class="bi bi-search"></i>
                 </button>
             </form>
 
-            <h1 class="header-title flex-grow-1 text-center">Top Rated Meals</h1>
+            <h1 class="header-title flex-grow-1 text-center">
+                {% if query %}Search Results{% else %}Top Rated Meals{% endif %}
+            </h1>
 
             </div>
 
-            <div class="row">
+            <div class="row g-4">
+                {% for recipe in recipes %}
                 <div class="col-md-4">
                     <div class="card">
-                        <img src="" class="card-img-top">
                         <div class="card-body text-center">
-                            ⭐⭐⭐⭐⭐
-                            <p>Pepperoni Pizza</p>
+                            <p>{{ recipe.name }}</p>
+                            <small>{{ recipe.cuisine|title }} • {{ recipe.difficulty|title }}</small>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-4">
+                {% empty %}
+                <div class="col-12">
                     <div class="card">
-                        <img src="" class="card-img-top">
                         <div class="card-body text-center">
-                            ⭐⭐⭐⭐⭐
-                            <p>Chorizo Fried Rice</p>
+                            <p>No recipes found.</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="" class="card-img-top">
-                        <div class="card-body text-center">
-                            ⭐⭐⭐⭐
-                            <p>Chow Mein</p>
-                        </div>
-                    </div>
-                </div>
-
+                {% endfor %}
             </div>
             </div>
 
