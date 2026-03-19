@@ -160,3 +160,34 @@ class AuthViewTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/homepage/")
+
+    def test_homepage_search_returns_matching_recipes(self):
+        user = User.objects.create_user(username="searchuser", password="StrongPass123!")
+
+        Recipes.objects.create(
+            author=user,
+            name="Pizza",
+            description="Cheesy pizza",
+            cuisine="italian",
+            difficulty="easy",
+            cooking_time=20,
+            ingredients="Dough, cheese, tomato sauce",
+            instructions="Bake the pizza",
+        )
+
+        Recipes.objects.create(
+            author=user,
+            name="Curry",
+            description="Spicy curry",
+            cuisine="indian",
+            difficulty="medium",
+            cooking_time=40,
+            ingredients="Chicken, curry paste",
+            instructions="Cook and serve",
+        )
+
+        response = self.client.get(reverse("recipes:homepage"), {"q": "pizza"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Pizza")
+        self.assertNotContains(response, "Curry")
