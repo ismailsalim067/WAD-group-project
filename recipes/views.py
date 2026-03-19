@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +12,21 @@ from .models import Recipes
 # Create your views here.
 
 def home(request):
-    return render(request, "homepage.html")
+    query = request.GET.get("q", "").strip()
+    recipes = Recipes.objects.all()
+
+    if query:
+        recipes = recipes.filter(
+            Q(name__icontains=query)
+            | Q(description__icontains=query)
+            | Q(ingredients__icontains=query)
+            | Q(cuisine__icontains=query)
+        )
+
+    return render(request, "homepage.html", {
+        "recipes": recipes,
+        "query": query,
+    })
 
 
 def redirect_to_homepage(request):
