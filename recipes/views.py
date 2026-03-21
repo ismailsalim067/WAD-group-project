@@ -73,9 +73,12 @@ def my_recipes(request):
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipes, id=id)
 
-    return render(request, "recipe_detail.html", {'recipe':recipe})
+    return render(request, "recipedetail.html", {'recipe':recipe})
 
 
 def logout_view(request):
     auth_logout(request)
     return redirect("/homepage/")
+
+def saved_view(request):
+    return HttpResponse("Starter save page view")
