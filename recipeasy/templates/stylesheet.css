@@ -1,0 +1,11 @@
+.container {
+    position: relative;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 85%;
+    display: flex;
+}
+.container .button {
+    justify-content: flex-end;
+    display: flex;
+}
