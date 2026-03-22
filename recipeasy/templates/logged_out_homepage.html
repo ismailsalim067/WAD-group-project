@@ -35,10 +35,9 @@
     }
 
     .search-bar {
-        padding: 8px;
-        border: 2px solid black;
-        box-sizing: border-box;
         width: 100%;
+        padding: 8px 8px 8px 35px;
+        border: 2px solid black;
     }
 
     .search-container {
@@ -46,7 +45,6 @@
         justify-self: start;
         position: relative;
         margin-left: 20px;
-        width: 80%;
     }
 
     .search-icon {
@@ -101,8 +99,9 @@
         margin: 20px;
     }
 
-    .myRecentUploadsImages {
-       height: 60%; 
+    .loggedOutRecentUploads {
+        padding-left: 30px;
+        font-size: 24px;
     }
 
     .buttonStyle {
@@ -111,14 +110,6 @@
         border-radius: 5px;
         border: 2px solid black;
         cursor: pointer;
-        background-color:#e0e0e0;
-        text-align: center;
-    }
-
-    .myRecentUploadsButtons {
-        position: absolute;
-        bottom: 20px;
-        right: 10px;
     }
 
     .sidebar {
@@ -167,6 +158,10 @@
         font-size: 18px;
     }
 
+    .loggedOutStats {
+        padding: 0 10px 10px 10px;
+    }
+
 
 </style>
 </head>
@@ -199,33 +194,12 @@
 
     <div class="myRecentUploads">
         <h1>My Recent Uploads</h1>
-
-        <div class="myRecentUploadsImages">
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
-            </div>
-
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
-            </div>
-
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
-            </div>
-        </div>
-
-        <div class="myRecentUploadsButtons">
-            <a class="buttonStyle" href="{% url 'recipes:createrecipe' %}">Add Recipe</a>
-            <a class="buttonStyle" href="{% url 'recipes:myrecipes' %}">All My Uploads</a>
-        </div>
+        <p class="loggedOutRecentUploads">You are not logged in. Please log in to view or add a recipe.</p>
     </div>
 
     <div class="sidebar">
         <div class="account-row">
-            <p>Account: user123</p>
+            <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
             <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
         </div>
         
@@ -239,20 +213,12 @@
                 <li>Indian</li>
                 <li>Mexican</li>
                 <li>Chinese</li>
-                <li>My Saved Recipes</li>
             </ul>
         </div>
 
         <div class="myStats">
             <h1>My Stats</h1>
-            <p>⭐ 3 ratings</p>
-            <p>⭐⭐ 28 ratings</p>
-            <p>⭐⭐⭐ 13 ratings</p>
-            <p>⭐⭐⭐⭐ 26 ratings</p>
-            <p>⭐⭐⭐⭐⭐ 33 ratings</p>
-
-            <p>Total Ratings Received: 100</p>
-            <p>Total Ratings Given: 5</p>
+            <p class="loggedOutStats">You are not logged in. Please log in to view your reviews.</p>
         </div>
     </div>
 </div>
