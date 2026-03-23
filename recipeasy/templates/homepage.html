@@ -176,9 +176,9 @@
     <div class="topRatedMeals">
         <div class="topHeader">
             <h1>{% if query or selected_difficulty %}Search Results{% else %}Top Rated Meals{% endif %}</h1>
-            <form class="search-container" method="get">
+            <form class="search-container" method="get" action="{% url 'recipes:homepage' %}">
                 <input class="search-bar" type="search" name="q" value="{{ query }}" placeholder="Search..">
-                <select class="form-select" name="difficulty">
+                <select class="form-select" name="difficulty" onchange="redirectToCategory(this)">
                     <option value="">All Difficulties</option>
                     <option value="easy" {% if selected_difficulty == "easy" %}selected{% endif %}>Easy</option>
                     <option value="medium" {% if selected_difficulty == "medium" %}selected{% endif %}>Medium</option>
@@ -238,10 +238,10 @@
         <div class="categories">
             <h1>Categories</h1>
             <ul>
-                <li><a href="?difficulty=easy">Easy</a></li>
-                <li><a href="?difficulty=medium">Medium</a></li>
-                <li><a href="?difficulty=hard">Hard</a></li>
-                <li>My Saved Recipes</li>
+                <li><a href="{% url 'recipes:view_category' 'easy' %}">Easy</a></li>
+                <li><a href="{% url 'recipes:view_category' 'medium' %}">Medium</a></li>
+                <li><a href="{% url 'recipes:view_category' 'hard' %}">Hard</a></li>
+                <li><a href="{% url 'recipes:saved' %}">My Saved Recipes</a></li>
             </ul>
         </div>
 
@@ -258,6 +258,23 @@
         </div>
     </div>
 </div>
+<script>
+function redirectToCategory(selectElement) {
+    const difficulty = selectElement.value;
+    if (!difficulty) {
+        return;
+    }
 
+    const searchInput = document.querySelector('input[name="q"]');
+    const query = searchInput ? searchInput.value.trim() : "";
+    let url = "{% url 'recipes:view_category' 'easy' %}".replace("easy", difficulty);
+
+    if (query) {
+        url += "?q=" + encodeURIComponent(query);
+    }
+
+    window.location.href = url;
+}
+</script>
 </body>
 </html>

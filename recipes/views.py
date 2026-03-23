@@ -13,7 +13,6 @@ from .models import Recipes
 
 def home(request):
     query = request.GET.get("q", "").strip()
-    difficulty = request.GET.get("difficulty", "").strip().lower()
     recipes = Recipes.objects.all()
 
     if query:
@@ -24,13 +23,33 @@ def home(request):
             | Q(cuisine__icontains=query)
         )
 
-    if difficulty in {"easy", "medium", "hard"}:
-        recipes = recipes.filter(difficulty=difficulty)
-
     return render(request, "homepage.html", {
         "recipes": recipes,
         "query": query,
-        "selected_difficulty": difficulty,
+        "selected_difficulty": "",
+    })
+
+
+def view_category(request, category):
+    query = request.GET.get("q", "").strip()
+    category = category.strip().lower()
+    recipes = Recipes.objects.all()
+
+    if query:
+        recipes = recipes.filter(
+            Q(name__icontains=query)
+            | Q(description__icontains=query)
+            | Q(ingredients__icontains=query)
+            | Q(cuisine__icontains=query)
+        )
+
+    if category in {"easy", "medium", "hard"}:
+        recipes = recipes.filter(difficulty=category)
+
+    return render(request, "viewcategory.html", {
+        "recipes": recipes,
+        "query": query,
+        "selected_difficulty": category,
     })
 
 

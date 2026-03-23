@@ -6,6 +6,7 @@ app_name = 'recipes'
 urlpatterns = [
     path("", views.redirect_to_homepage, name="home"),
     path("homepage/", views.home, name="homepage"),
+    path("viewcategory/<str:category>/", views.view_category, name="view_category"),
     path("createrecipe/", views.create_recipe, name="createrecipe"),
     path("login/", views.login, name="login"),
     path("logout/", views.logout_view, name="logout"),

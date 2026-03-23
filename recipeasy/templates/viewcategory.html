@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Easy Recipes</title>
+  <title>{{ selected_difficulty|title }} Recipes</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+
   <style>
     body {
       position: relative;
@@ -45,63 +45,52 @@
     .card {
       border: 1px solid black;
       text-align: center;
+      height: 100%;
     }
-
   </style>
 </head>
 <body>
 
-  <h1 class="title">Easy Recipes</h1>
+  <h1 class="title">{{ selected_difficulty|title }} Recipes</h1>
 
   <div class="top-buttons">
-    <button class="btn btn-outline-dark me-2">Sign In</button>
-    <button class="btn btn-outline-dark">Sign Out</button>
+    {% if user.is_authenticated %}
+      <a href="{% url 'recipes:logout' %}" class="btn btn-outline-dark">Sign Out</a>
+    {% else %}
+      <a href="{% url 'recipes:login' %}" class="btn btn-outline-dark me-2">Sign In</a>
+      <a href="{% url 'recipes:signup' %}" class="btn btn-outline-dark">Sign Up</a>
+    {% endif %}
   </div>
 
   <div class="container mt-4">
+    {% if query %}
+      <p class="text-center">Search results for "{{ query }}" in {{ selected_difficulty|title }}</p>
+    {% endif %}
+
     <div class="row g-4">
-
-      <div class="col-md-4">
-        <div class="card">
-          <img src="" class="card-img-top">
-          <div class="card-body p-2">
-            <p class="card-text">Chicken Korma</p>
+      {% for recipe in recipes %}
+        <div class="col-md-4">
+          <div class="card">
+            {% if recipe.image %}
+              <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.name }}">
+            {% else %}
+              <img src="" class="card-img-top" alt="{{ recipe.name }}">
+            {% endif %}
+            <div class="card-body p-2">
+              <p class="card-text">{{ recipe.name }}</p>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <img src="" class="card-img-top">
-          <div class="card-body p-2">
-            <p class="card-text">Tomato Soup</p>
-          </div>
+      {% empty %}
+        <div class="col-12 text-center">
+          <p>No recipes found in this category.</p>
         </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <img src="" class="card-img-top">
-          <div class="card-body p-2">
-            <p class="card-text">Scrambled Eggs</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <img src="" class="card-img-top">
-          <div class="card-body p-2">
-            <p class="card-text">Spaghetti Bolognese</p>
-          </div>
-        </div>
-      </div>
-
+      {% endfor %}
     </div>
   </div>
 
   <div class="home-button">
-    <button class="btn btn-outline-dark">Home</button>
+    <a href="{% url 'recipes:homepage' %}" class="btn btn-outline-dark">Home</a>
   </div>
 
 </body>
