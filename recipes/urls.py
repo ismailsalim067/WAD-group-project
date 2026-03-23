@@ -13,6 +13,5 @@ urlpatterns = [
     path("myrecipes/", views.my_recipes, name="myrecipes"),
     path('myrecipes/<int:id>/', views.recipe_detail, name='recipe_detail'),
     path("saved/", views.saved_view, name="saved"),
-    path("gethint/", views.get_hint, name="gethint"),
 
 ]
