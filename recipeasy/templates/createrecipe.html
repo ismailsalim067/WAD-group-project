@@ -1,22 +1,28 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Create Recipe</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="stylesheet.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>  
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>  
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
     </head>
+
     <body class="bg-light">
+        <div class="account-row top-right">
+              {% if user.is_authenticated %}
+                  <p>Account: {{ user.username }}</p>
+                  <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+              {% else %}
+                  <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+                  <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
+              {% endif %}
+        </div>
+
         <div class="container mt-3">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="me-3">Account: {{ username }}</span>
-                <a href="{% url 'recipes:logout' %}" class="btn btn-outline-success">Sign out</a>
-            </div>
-
             <h2 class="mb-4">Create Recipe</h2>
 
             <form method="POST">
@@ -81,15 +87,15 @@
                         </div>
 
                         <div class="mb-2">
-                            <button type="submit" class="btn btn-success w-100">Create Recipe</button>
-                        </div>
-
-                        <div class="button mt-auto mb-3">
-                            <a href="/homepage/" class="btn btn-outline-success">Home</a>
+                            <button type="submit" class="buttonStyle w-100">Create Recipe</button>
                         </div>
                     </div>
                 </div>
             </form>
+
+            <div class="home-button">
+                <a href="/homepage/" class="buttonStyle">Home</a>
+            </div>
 
         </div>
         <script>

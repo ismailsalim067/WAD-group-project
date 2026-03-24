@@ -1,180 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RecipEasy</title>
-<style>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    body, html {
-        height: 100%;
-        margin: 0;
-    }
-
-    .container {
-        display: grid;
-        height: 100vh;
-        grid-template-columns: 75% 25%;
-        grid-template-rows: 50% 50%;
-    }
-
-    .topRatedMeals {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    .topHeader {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        align-items: center;
-    }
-
-    .topHeader h1 {
-        grid-column: 2;
-        justify-self: center;
-        margin-top: 10px;
-        margin-bottom: 0px;
-    }
-
-    .search-bar {
-        padding: 8px;
-        border: 2px solid black;
-        box-sizing: border-box;
-        width: 100%;
-    }
-
-    .search-container {
-        grid-column: 1;
-        justify-self: start;
-        position: relative;
-        margin-left: 20px;
-        width: 80%;
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .topRatedMealsImages, .myRecentUploadsImages {
-        margin: 10px;
-        width: 90%;
-        justify-self: center;
-        justify-content: center;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .topRatedMealsImages {
-        height: 70%;
-    }
-
-    .meal-card {
-        border: 2px solid black;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 10px;
-    }
-
-    .meal-img {
-        width: 100%;
-        height: 80%;
-        justify-self: center;
-        object-fit: cover;
-    }
-
-    .meal-card h3 {
-        margin: 5px 0 0 0;
-        font-weight: bold;
-    }
-
-    .myRecentUploads {
-        grid-column: 1;
-        grid-row: 2;
-        position: relative;
-        border-top: 2px solid black;
-    }
-
-    .myRecentUploads h1 {
-        justify-self: left;
-        margin: 20px;
-    }
-
-    .myRecentUploadsImages {
-       height: 60%; 
-    }
-
-    .buttonStyle {
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        border: 2px solid black;
-        cursor: pointer;
-        background-color:#e0e0e0;
-        text-align: center;
-    }
-
-    .myRecentUploadsButtons {
-        position: absolute;
-        bottom: 20px;
-        right: 10px;
-    }
-
-    .sidebar {
-        grid-column: 2;
-        grid-row: 1 / 3;
-        border-left: 2px solid black;
-    }
-
-    .account-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-        width: 100%;
-        padding: 10px;
-        gap: 5px;
-        height: 60px;
-        box-sizing: border-box;
-    }
-
-    .account-row p {
-        grid-column: 1;
-        margin: 0;
-        justify-self: center;
-        font-size: 18px;
-    }
-
-    .account-row button {
-        margin-right: 0;
-    }
-
-    .categories {
-        justify-self: center;
-        padding-top: 25px;
-    }
-
-    .categories li {
-        font-size: 26px;
-    }
-
-    .myStats {
-        padding-top: 26px;
-        text-align: center;
-    }
-
-    .myStats p {
-        font-size: 18px;
-    }
-
-
-</style>
 </head>
 
-<body>
-<div class="container">
+<body class="homepage">
+<div class="homepage-container">
     <div class="topRatedMeals">
         <div class="topHeader">
+            <h1 class="recipEasyTitle">RecipEasy</h1>
             <h1>{% if query or selected_difficulty %}Search Results{% else %}Top Rated Meals{% endif %}</h1>
             <form class="search-container" method="get" action="{% url 'recipes:homepage' %}">
                 <input class="search-bar" type="search" name="q" value="{{ query }}" placeholder="Search..">
@@ -205,56 +43,71 @@
 
     <div class="myRecentUploads">
         <h1>My Recent Uploads</h1>
+        {% if user.is_authenticated %}
+            <div class="myRecentUploadsImages">
+                <div class="meal-card">
+                    <img class = "meal-img" src="" alt="pizza">
+                    <h3>Pizza</h3>
+                </div>
 
-        <div class="myRecentUploadsImages">
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
+                <div class="meal-card">
+                    <img class = "meal-img" src="" alt="pizza">
+                    <h3>Pizza</h3>
+                </div>
+
+                <div class="meal-card">
+                    <img class = "meal-img" src="" alt="pizza">
+                    <h3>Pizza</h3>
+                </div>
             </div>
 
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
+            <div class="myRecentUploadsButtons">
+                <a class="buttonStyle" href="{% url 'recipes:createrecipe' %}">Add Recipe</a>
+                <a class="buttonStyle" href="{% url 'recipes:myrecipes' %}">All My Uploads</a>
             </div>
 
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
-            </div>
-        </div>
-
-        <div class="myRecentUploadsButtons">
-            <a class="buttonStyle" href="{% url 'recipes:createrecipe' %}">Add Recipe</a>
-            <a class="buttonStyle" href="{% url 'recipes:myrecipes' %}">All My Uploads</a>
-        </div>
+        {% else %}
+            <p>You are not logged in. Please log in to view your recipes or add a recipe.</p>
+        {% endif %}
     </div>
 
-    <div class="sidebar">
+    <div class="sidebar homepage-sidebar">
         <div class="account-row">
-            <p>Account: user123</p>
-            <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+            {% if user.is_authenticated %}
+                <p>Account: {{ user.username }}</p>
+                <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+            {% else %}
+                <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+                <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
+            {% endif %}
         </div>
-        
+
         <div class="categories">
             <h1>Categories</h1>
             <ul>
                 <li><a href="{% url 'recipes:view_category' 'easy' %}">Easy</a></li>
                 <li><a href="{% url 'recipes:view_category' 'medium' %}">Medium</a></li>
                 <li><a href="{% url 'recipes:view_category' 'hard' %}">Hard</a></li>
-                <li><a href="{% url 'recipes:saved' %}">My Saved Recipes</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'recipes:saved' %}">My Saved Recipes</a></li>
+                    {% endif %}
             </ul>
         </div>
 
         <div class="myStats">
             <h1>My Stats</h1>
-            <p>⭐ 3 ratings</p>
-            <p>⭐⭐ 28 ratings</p>
-            <p>⭐⭐⭐ 13 ratings</p>
-            <p>⭐⭐⭐⭐ 26 ratings</p>
-            <p>⭐⭐⭐⭐⭐ 33 ratings</p>
+            {% if user.is_authenticated %}
+                <p>⭐ 3 ratings</p>
+                <p>⭐⭐ 28 ratings</p>
+                <p>⭐⭐⭐ 13 ratings</p>
+                <p>⭐⭐⭐⭐ 26 ratings</p>
+                <p>⭐⭐⭐⭐⭐ 33 ratings</p>
 
-            <p>Total Ratings Received: 100</p>
-            <p>Total Ratings Given: 5</p>
+                <p>Total Ratings Received: 100</p>
+                <p>Total Ratings Given: 5</p>
+            {% else %}
+                <p>You are not logged in. Please log in to view your reviews.</p>
+            {% endif %}
         </div>
     </div>
 </div>
