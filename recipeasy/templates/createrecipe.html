@@ -8,15 +8,81 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>  
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>  
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css"/>
+
+        <style>
+            body {
+                background-color: #F9FBF9;
+                color: #2E2E2E;
+                font-family: sans-serif;
+            }
+
+            h2, .form-label {
+                color: #388E3C;
+            }
+
+            .form-control, .form-select {
+                border-radius: 8px;
+                border: 1px solid #DADADA;
+            }
+            
+            .buttonStyle {
+              padding: 10px 20px;
+              font-size: 16px;
+              border-radius: 5px;
+              cursor: pointer;
+              text-align: center;
+              background-color: #4CAF50;
+              border: none;
+              color: white;
+            }
+
+            .buttonStyle:hover {
+              background-color: #388E3C;
+            }
+
+            .account-row {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              align-items: center;
+              width: 100%;
+              padding: 10px;
+              gap: 5px;
+              height: 60px;
+              box-sizing: border-box;
+            }
+
+            .account-row.top-right {
+              display: flex;
+              justify-content: flex-end;
+              gap: 10px;
+              margin-top: 20px;
+            }
+
+            .account-row.top-right p {
+                margin-top: 10px;
+            }
+
+            .home-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+            }
+
+        </style>
     </head>
+
     <body class="bg-light">
+        <div class="account-row top-right">
+              {% if user.is_authenticated %}
+                  <p>Account: {{ user.username }}</p>
+                  <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+              {% else %}
+                  <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+                  <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
+              {% endif %}
+        </div>
+
         <div class="container mt-3">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="me-3">Account: {{ username }}</span>
-                <a href="{% url 'recipes:logout' %}" class="btn btn-outline-success">Sign out</a>
-            </div>
-
             <h2 class="mb-4">Create Recipe</h2>
 
             <form method="POST">
@@ -81,15 +147,15 @@
                         </div>
 
                         <div class="mb-2">
-                            <button type="submit" class="btn btn-success w-100">Create Recipe</button>
-                        </div>
-
-                        <div class="button mt-auto mb-3">
-                            <a href="/homepage/" class="btn btn-outline-success">Home</a>
+                            <button type="submit" class="buttonStyle w-100">Create Recipe</button>
                         </div>
                     </div>
                 </div>
             </form>
+
+            <div class="home-button">
+                <a href="/homepage/" class="buttonStyle">Home</a>
+            </div>
 
         </div>
         <script>
