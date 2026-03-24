@@ -47,6 +47,12 @@
       text-align: center;
       height: 100%;
     }
+
+    .recipe-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -70,16 +76,23 @@
     <div class="row g-4">
       {% for recipe in recipes %}
         <div class="col-md-4">
-          <div class="card">
-            {% if recipe.image %}
-              <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.name }}">
-            {% else %}
-              <img src="" class="card-img-top" alt="{{ recipe.name }}">
-            {% endif %}
-            <div class="card-body p-2">
-              <p class="card-text">{{ recipe.name }}</p>
+
+          <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
+            <div class="card">
+
+              {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.name }}">
+              {% else %}
+                <img src="" class="card-img-top" alt="{{ recipe.name }}">
+              {% endif %}
+
+              <div class="card-body p-2">
+                <p class="card-text">{{ recipe.name }}</p>
+              </div>
+
             </div>
-          </div>
+          </a>
+
         </div>
       {% empty %}
         <div class="col-12 text-center">
@@ -87,7 +100,6 @@
         </div>
       {% endfor %}
     </div>
-  </div>
 
   <div class="home-button">
     <a href="{% url 'recipes:homepage' %}" class="btn btn-outline-dark">Home</a>

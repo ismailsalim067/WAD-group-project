@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import RecipeForm, SignUpForm, RatingForm
-from .models import Recipes, Rating
+from .models import Recipes, Rating, SavedRecipe
 from django.db.models import Avg
 
 
@@ -23,12 +23,18 @@ def home(request):
             | Q(ingredients__icontains=query)
             | Q(cuisine__icontains=query)
         )
-
-    return render(request, "homepage.html", {
+    
+    if request.user.is_authenticated:
+        return render(request, "homepage.html", {
         "recipes": recipes,
         "query": query,
         "selected_difficulty": "",
     })
+    else:
+        return render(request, "logged_out_homepage.html")
+    
+
+    
 
 
 def view_category(request, category):
@@ -151,3 +157,25 @@ def logout_view(request):
 
 def saved_view(request):
     return HttpResponse("Starter save page view")
+
+
+@login_required
+def toggle_save_recipe(request, recipe_id):
+    if request.method == 'POST':
+        recipe = get_object_or_404(Recipes, id=recipe_id)
+        saved = SavedRecipe.objects.filter(user=request.user, recipe=recipe)
+
+        if saved.exists():
+            saved.delete()
+        else:
+            SavedRecipe.objects.create(user=request.user, recipe=recipe)
+
+    return redirect(request.META.get('HTTP_REFERER', 'recipes:homepage'))
+
+@login_required
+def saved_view(request):
+    saved = SavedRecipe.objects.filter(user=request.user).select_related('recipe')
+    recipes = [s.recipe for s in saved]
+
+    recipe_list = "".join([f"<li>{r.name}</li>" for r in recipes])
+    return HttpResponse(f"<ul>{recipe_list}</ul>")
