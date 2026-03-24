@@ -11,9 +11,9 @@
 
         <div class="container mt-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <span>Account: {{ user.username }}</span>
                 <div>
                     {% if user.is_authenticated %}
+                        <span>Account: {{ user.username }}</span>
                         <a href="{% url 'recipes:logout' %}" class="btn btn-outline-dark">Sign Out</a>
                     {% else %}
                         <a href="{% url 'recipes:login' %}" class="btn btn-outline-dark me-2">Log In</a>
