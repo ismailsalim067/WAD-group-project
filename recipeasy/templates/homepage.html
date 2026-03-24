@@ -19,30 +19,46 @@
     .topRatedMeals {
         grid-column: 1;
         grid-row: 1;
+        position: relative;
+    }
+
+    .recipEasyTitle {
+        grid-column: 1 / 4;
+        grid-row: 1;
+        text-align: center;
+        font-size: 45px;
+        font-weight: bold;
+        margin: 10px 0 0 0;
     }
 
     .topHeader {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto auto;
         align-items: center;
     }
 
-    .topHeader h1 {
+    .topHeader h1:not(.recipEasyTitle) {
         grid-column: 2;
+        grid-row: 2;
         justify-self: center;
-        margin-top: 10px;
-        margin-bottom: 0px;
+        margin: 10px 0 0 0;
     }
 
     .search-bar {
         padding: 8px;
-        border: 2px solid black;
+        border-radius: 6px;
         box-sizing: border-box;
         width: 100%;
     }
 
+    .search-bar:focus {
+        outline: none;
+    }
+
     .search-container {
         grid-column: 1;
+        grid-row: 2;
         justify-self: start;
         position: relative;
         margin-left: 20px;
@@ -71,10 +87,12 @@
 
     .meal-card {
         border: 2px solid black;
+        border-radius: 8px;
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 10px;
+        
     }
 
     .meal-img {
@@ -109,10 +127,9 @@
         padding: 10px 20px;
         font-size: 16px;
         border-radius: 5px;
-        border: 2px solid black;
         cursor: pointer;
-        background-color:#e0e0e0;
         text-align: center;
+        border: 2px solid black;
     }
 
     .myRecentUploadsButtons {
@@ -150,8 +167,10 @@
     }
 
     .categories {
-        justify-self: center;
-        padding-top: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
     }
 
     .categories li {
@@ -175,6 +194,7 @@
 <div class="container">
     <div class="topRatedMeals">
         <div class="topHeader">
+            <h1 class="recipEasyTitle">RecipEasy</h1>
             <h1>{% if query or selected_difficulty %}Search Results{% else %}Top Rated Meals{% endif %}</h1>
             <form class="search-container" method="get" action="{% url 'recipes:homepage' %}">
                 <input class="search-bar" type="search" name="q" value="{{ query }}" placeholder="Search..">
@@ -205,34 +225,41 @@
 
     <div class="myRecentUploads">
         <h1>My Recent Uploads</h1>
+        {% if user.is_authenticated %}
+            <div class="myRecentUploadsImages">
+                <div class="meal-card">
+                    <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
+                    <h3>Pizza</h3>
+                </div>
 
-        <div class="myRecentUploadsImages">
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
+                <div class="meal-card">
+                    <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
+                    <h3>Pizza</h3>
+                </div>
+
+                <div class="meal-card">
+                    <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
+                    <h3>Pizza</h3>
+                </div>
             </div>
 
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
+            <div class="myRecentUploadsButtons">
+                <a class="buttonStyle" href="{% url 'recipes:createrecipe' %}">Add Recipe</a>
+                <a class="buttonStyle" href="{% url 'recipes:myrecipes' %}">All My Uploads</a>
             </div>
-
-            <div class="meal-card">
-                <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
-                <h3>Pizza</h3>
-            </div>
-        </div>
-
-        <div class="myRecentUploadsButtons">
-            <a class="buttonStyle" href="{% url 'recipes:createrecipe' %}">Add Recipe</a>
-            <a class="buttonStyle" href="{% url 'recipes:myrecipes' %}">All My Uploads</a>
-        </div>
+        {% else %}
+            <p>You are not logged in. Please log in to view your recipes or add a recipe.</p>
+        {% endif %}
     </div>
 
     <div class="sidebar">
         <div class="account-row">
-            <p>Account: user123</p>
-            <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+            {% if user.is_authenticated %}
+                <p>Account: {{ user.username }}</p>
+                <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+            {% else %}
+                <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+            {% endif %}
         </div>
         
         <div class="categories">
@@ -241,20 +268,26 @@
                 <li><a href="{% url 'recipes:view_category' 'easy' %}">Easy</a></li>
                 <li><a href="{% url 'recipes:view_category' 'medium' %}">Medium</a></li>
                 <li><a href="{% url 'recipes:view_category' 'hard' %}">Hard</a></li>
-                <li><a href="{% url 'recipes:saved' %}">My Saved Recipes</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'recipes:saved' %}">My Saved Recipes</a></li>
+                    {% endif %}
             </ul>
         </div>
 
         <div class="myStats">
             <h1>My Stats</h1>
-            <p>⭐ 3 ratings</p>
-            <p>⭐⭐ 28 ratings</p>
-            <p>⭐⭐⭐ 13 ratings</p>
-            <p>⭐⭐⭐⭐ 26 ratings</p>
-            <p>⭐⭐⭐⭐⭐ 33 ratings</p>
+            {% if user.is_authenticated %}
+                <p>⭐ 3 ratings</p>
+                <p>⭐⭐ 28 ratings</p>
+                <p>⭐⭐⭐ 13 ratings</p>
+                <p>⭐⭐⭐⭐ 26 ratings</p>
+                <p>⭐⭐⭐⭐⭐ 33 ratings</p>
 
-            <p>Total Ratings Received: 100</p>
-            <p>Total Ratings Given: 5</p>
+                <p>Total Ratings Received: 100</p>
+                <p>Total Ratings Given: 5</p>
+            {% else %}
+                <p>You are not logged in. Please log in to view your reviews.</p>
+            {% endif %}
         </div>
     </div>
 </div>
