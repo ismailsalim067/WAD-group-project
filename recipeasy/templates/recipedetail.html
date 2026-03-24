@@ -4,275 +4,218 @@
     <title>Recipe Detail</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #F9FBF9; 
+            color: #2E2E2E; 
+            font-family: sans-serif; 
+        }
 
-<style>
-    .page {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
+        h2, h5 { color: #388E3C; }
 
-    .top-section, .bottom-section {
-        flex: 1;
-        overflow-y: auto;
-    }
+        .buttonStyle {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .buttonStyle:hover { background-color: #388E3C; }
 
-    .content-wrapper {
-        padding-top: 20px;
-    }
+        .page-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
 
-    .col-lg-9 {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+        .recipe-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            align-items: center;
+        }
 
-    .recipe-image-wrapper {
-        text-align: center;
-        flex: 1 1 300px;
-    }
+        .recipe-img-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    .recipe-img {
-        width: 100%;
-        max-width: 400px;
-        height: auto;
-        border: 2px solid black;
-    }
+        .recipe-img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border: 2px solid #DADADA;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
 
-    .rating {
-        font-size: clamp(1.5rem, 2vw, 2.5rem);
-        margin-top: 10px;
-    }
+        .rating { color: #FFD700; font-size: 1.5rem; text-align: center; }
 
-    .recipe-details {
-        flex: 2 1 300px;
-    }
+        .sidebar {
+            background-color: #E8F5E9;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    .recipe-details p {
-        font-size: clamp(1rem, 1.2vw, 1.6rem);
-        margin: 5px 0;
-    }
+        .sidebar-content {
+            flex-grow: 1;
+        }
 
-    .instructions-wrapper {
-        max-height: 70vh;
-        overflow-y: auto;
-    }
-
-    .instructions-list {
-        font-size: clamp(1rem, 2.5vw, 1.8rem);
-    }
-
-    .bottom-secton ol {
-        font-size: clamp(1rem, 1.2vw, 1.6rem);
-    }
-
-    .sidebar {
-        padding: 2rem;
-        border-left: 1px solid black;
-        font-size: clamp(16px, 1.2vw, 28px);
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        min-width: 220px;
-    }
-
-    .sidebar h5 {
-        font-size: 1.2em;
-        margin-top: 20px;
-        margin-bottom: 15px;
-    }
-    
-    .sidebar p, .sidebar li {
-        font-size: 1em;
-    }
-
-    .sidebar ul {
-        list-style-position: inside;
-        text-align: left;
-        display: table;
-        padding-left: 0;
-        margin: 0 auto 40px auto;
-    }
-
-    .account-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-        border-bottom: 1px solid black;
-        padding-bottom: 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .account-name {
-        flex: 1 1 150px;
-    }
-
-    .signout-btn {
-        display: flex;
-        justify-content: flex-end;
-        flex: 1 1 120px;
-    }
-
-    .review-box {
-        border: 1px solid black;
-        overflow-y: auto;
-        padding: 10px;
-        height: 120px;
-    }
-
-    .reviews-section {
-        border-left: 1px solid black;
-    }
-
-    .leave-review-box textarea {
-        width: 100%;
-    }
-
-    @media (max-width: 768px) {
-        .col-lg-9 {
+        .card {
+            background-color: white;
+            border: 1px solid #DADADA;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
             flex-direction: column;
         }
+
+        .instructions-wrapper, .review-box {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .account-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            width: 100%;
+            padding: 10px 0;
+            gap: 5px;
+        }
+
+        .account-row p { margin: 0; justify-self: center; }
 
         .reviews-section {
-            border-left: none;
-            border-top: 1px solid black;
-            margin-top: 20px;
-            padding-top: 20px;
-        }
-    }
-
-    @media (max-width: 500px) {
-        .account-row {
+            flex-grow: 1;
+            display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            position: relative; /* needed for absolute positioning of submit */
         }
 
-        .signout-btn {
-            width: 100%;
+        .reviews-section form {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
         }
 
-        .signout-btn button {
-            width: 100%;
+        .submit-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto;
         }
-    }
 
+        .home-button {
+            width: 50%; /* half the sidebar width */
+            align-self: flex-end;
+        }
 
-</style>
+        @media (max-width: 768px) {
+            .page-grid { grid-template-columns: 1fr; }
+            .recipe-main { grid-template-columns: 1fr; }
+            .recipe-img-wrapper { justify-content: center; margin-bottom: 15px; }
+            .home-button { width: 100%; align-self: center; }
+        }
+    </style>
 </head>
 
 <body>
-<div class="container-fluid page">
-<div class="row border-bottom top-section">
-    <div class="col-lg-9 content-wrapper">
-        <div class="recipe-image-wrapper">
-            <img src="C:\Users\zoest\Downloads\chowmein.jpg" class="recipe-img">
-            <div class="rating">
-                {% for i in "12345" %}
-                    {% if forloop.counter <= average_rating %}
-                        ★
-                    {% else %}
-                        ☆
-                    {% endif %}
-                {% endfor %}
-                
-            </div>
-        </div>
 
-        <div class="recipe-details">
-            <p><strong>Recipe:</strong> {{ recipe.name }}</p>
-            <p><strong>Description:</strong> {{ recipe.description }}</p>
-            <p><strong>Cuisine:</strong> {{ recipe.get_cuisine_display }}</p>
-            <p><strong>Difficulty:</strong> {{ recipe.get_difficulty_display }}</p>
-            <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
-            <p><strong>Author:</strong> {{ recipe.author.username }}</p>
-        </div>
-    </div>
+<div class="page-grid">
 
-    <div class="col-3 sidebar px-0">
-        <div class="account-row">
-            <div class="account-name">
-                <b>Account:</b><span class="ms-2">user123</span> 
-            </div>
-
-            <div class="signout-btn px-4">
-                <a href="{% url 'recipes:logout' %}" class="btn btn-outline-dark">Sign Out</a>
-            </div>
-        </div>
-
-        <h5>Ingredients</h5>
-        <ul>
-            <p>{{ recipe.ingredients }}</p>
-        </ul>
-    </div>
-</div>
-
-<div class="row bottom-section">
-    <div class="col-lg-6 p-4">
-        <h2 style="font-size: 2.5rem">Instructions</h2>
-        <div class="instructions-wrapper">
-        <ol class="instructions-list">
-            <p>{{ recipe.instructions }}</p>
-        </ol>
-        </div>
-    </div>
-
-    <div class="col-lg-6 p-4 d-flex flex-column reviews-section">
-        <h2 class="text-start">Reviews</h2>
-
-        <div class="review-box mb-3">
-            {% for rating in ratings %}
-                <p>
-                    <strong>{{ rating.user.username }}</strong>
-                    -
+    <div>
+        <div class="recipe-main mb-3">
+            <div class="recipe-img-wrapper">
+                <img src="C:\Users\zoest\Downloads\chowmein.jpg" class="recipe-img" alt="Recipe Image">
+                <div class="rating">
                     {% for i in "12345" %}
-                        {% if forloop.counter <= rating.value %}
-                            ★
-                        {% else %}
-                            ☆
-                        {% endif %}
+                        {% if forloop.counter <= average_rating %}★{% else %}☆{% endif %}
                     {% endfor %}
-                    {% if rating.comment %}
-                        : {{ rating.comment }}
-                    {% endif %}
-                </p>
-            {% empty %}
-                <p>No reviews yet.</p>
-            {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h2>{{ recipe.name }}</h2>
+                <p><strong>Description:</strong> {{ recipe.description }}</p>
+                <p><strong>Cuisine:</strong> {{ recipe.get_cuisine_display }}</p>
+                <p><strong>Difficulty:</strong> {{ recipe.get_difficulty_display }}</p>
+                <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
+                <p><strong>Author:</strong> {{ recipe.author.username }}</p>
+            </div>
         </div>
 
-        <div class="border p-3 mb-3">
-                <h4>Leave a Review</h4>
-                <form method="post" action="{% url 'recipes:recipe_detail' id=recipe.id %}">
-                    {% csrf_token %}
+        <div class="card">
+            <h4>Instructions</h4>
+            <div class="instructions-wrapper">
+                <ol>
+                    <li>{{ recipe.instructions }}</li>
+                </ol>
+            </div>
+        </div>
 
-                
-                    {{ form.comment }}
+        <div class="card reviews-section">
+            <h4>Reviews</h4>
+            <div class="review-box mb-3">
+                {% for rating in ratings %}
+                    <p>
+                        <strong>{{ rating.user.username }}</strong> - 
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= rating.value %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                        {% if rating.comment %}: {{ rating.comment }}{% endif %}
+                    </p>
+                {% empty %}
+                    <p>No reviews yet.</p>
+                {% endfor %}
+            </div>
 
-                    <div class="d-flex justify-content-between align-items-start mt-2 gap-2">
-                        <div class="w-25">
-                            <label for="id_value" class="form-label">Rating</label>
-                            {{ form.value }}
-                        </div>
-
-                        <div class="align-self-end">
-                            <button type="submit" class="btn btn-dark">Submit</button>
-                        </div>
+            <form method="post" action="{% url 'recipes:recipe_detail' id=recipe.id %}">
+                {% csrf_token %}
+                {{ form.comment }}
+                <div class="submit-wrapper">
+                    <div class="w-25 me-2">
+                        <label for="id_value" class="form-label">Rating</label>
+                        {{ form.value }}
                     </div>
-
-                    {% if form.errors %}
-                        <div class="text-danger mt-2">
-                            {{ form.errors }}
-                        </div>
-                    {% endif %}
-                </form>
+                    <button type="submit" class="buttonStyle">Submit</button>
+                </div>
+                {% if form.errors %}
+                    <div class="text-danger mt-2">{{ form.errors }}</div>
+                {% endif %}
+            </form>
         </div>
     </div>
-</div>
 
-<div class="d-flex justify-content-end p-4" style="position: fixed; bottom: 0; right: 0; z-index: 10;">
-    <button class="btn btn-outline-dark mt-1">Home</button>
-</div>
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <div class="account-row">
+                {% if user.is_authenticated %}
+                    <p>Account: {{ user.username }}</p>
+                    <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+                {% else %}
+                    <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+                    <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
+                {% endif %}
+            </div>
+
+            <h5>Ingredients</h5>
+            <ul>
+                {% for ingredient in recipe.ingredients.splitlines %}
+                    <li>{{ ingredient }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="/homepage/" class="buttonStyle home-button mt-2">Home</a>
+    </div>
 
 </div>
 

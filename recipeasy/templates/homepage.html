@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RecipEasy</title>
 <style>
 
     body, html {
         height: 100%;
         margin: 0;
+        background-color: #F9FBF9;
+        color: #2E2E2E;
     }
 
     .container {
@@ -29,6 +32,7 @@
         font-size: 45px;
         font-weight: bold;
         margin: 10px 0 0 0;
+        color: #388E3C;
     }
 
     .topHeader {
@@ -48,12 +52,14 @@
     .search-bar {
         padding: 8px;
         border-radius: 6px;
+        border: 1px solid #DADADA;
         box-sizing: border-box;
         width: 100%;
     }
 
     .search-bar:focus {
         outline: none;
+        border-color: #4CAF50;
     }
 
     .search-container {
@@ -86,13 +92,13 @@
     }
 
     .meal-card {
-        border: 2px solid black;
+        border: 1px solid #DADADA;
         border-radius: 8px;
+        background-color: white;
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 10px;
-        
     }
 
     .meal-img {
@@ -111,7 +117,7 @@
         grid-column: 1;
         grid-row: 2;
         position: relative;
-        border-top: 2px solid black;
+        border-top: 1px solid #DADADA;
     }
 
     .myRecentUploads h1 {
@@ -129,7 +135,13 @@
         border-radius: 5px;
         cursor: pointer;
         text-align: center;
-        border: 2px solid black;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+    }
+
+    .buttonStyle:hover {
+        background-color: #388E3C;
     }
 
     .myRecentUploadsButtons {
@@ -141,7 +153,14 @@
     .sidebar {
         grid-column: 2;
         grid-row: 1 / 3;
-        border-left: 2px solid black;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        box-sizing: border-box;
+        border-left: 1px solid #DADADA;
+        background-color: #E8F5E9;
     }
 
     .account-row {
@@ -173,6 +192,14 @@
         padding-top: 20px;
     }
 
+    .categories a {
+        color: #2E7D32;
+    }
+
+    .categories a:hover {
+        color: #1B5E20;
+    }
+
     .categories li {
         font-size: 26px;
     }
@@ -186,6 +213,52 @@
         font-size: 18px;
     }
 
+    @media (max-width: 878px) {
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            order: 4;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .account-row {
+            order: 10;
+            width: 100%;
+        }
+
+        .topRatedMeals {
+            order: 2;
+        }
+
+        .myRecentUploads {
+            order: 3;
+            padding-bottom: 20px;
+        }
+
+        .topRatedMealsImages, .myRecentUploadsImages {
+            grid-template-columns: 1fr 1fr;
+            height: auto;
+            gap: 10px;
+        }
+
+        .meal-img {
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .myRecentUploadsButtons {
+            position: absolute;
+            bottom: 20px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+    }
 
 </style>
 </head>
@@ -228,17 +301,17 @@
         {% if user.is_authenticated %}
             <div class="myRecentUploadsImages">
                 <div class="meal-card">
-                    <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
+                    <img class = "meal-img" src="" alt="pizza">
                     <h3>Pizza</h3>
                 </div>
 
                 <div class="meal-card">
-                    <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
+                    <img class = "meal-img" src="" alt="pizza">
                     <h3>Pizza</h3>
                 </div>
 
                 <div class="meal-card">
-                    <img class = "meal-img" src="C:\Users\zoest\Downloads\pizza.jpg" alt="pizza">
+                    <img class = "meal-img" src="" alt="pizza">
                     <h3>Pizza</h3>
                 </div>
             </div>
@@ -259,9 +332,10 @@
                 <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
             {% else %}
                 <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+                <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
             {% endif %}
         </div>
-        
+
         <div class="categories">
             <h1>Categories</h1>
             <ul>
