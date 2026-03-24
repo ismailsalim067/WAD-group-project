@@ -5,8 +5,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import RecipeForm, SignUpForm
-from .models import Recipes
+from .forms import RecipeForm, SignUpForm, RatingForm
+from .models import Recipes, Rating
+from django.db.models import Avg
 
 
 # Create your views here.
@@ -112,7 +113,36 @@ def my_recipes(request):
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipes, id=id)
 
-    return render(request, "recipedetail.html", {'recipe':recipe})
+    ratings = Rating.objects.filter(recipe=recipe).select_related('user')
+    existing_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
+
+    if request.method == "POST":
+        
+        form = RatingForm(request.POST, instance=existing_rating)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.recipe = recipe
+            rating.user = request.user
+            rating.save()
+
+            return redirect('recipes:recipe_detail', id=recipe.id)
+        
+    else: 
+        form = RatingForm(instance=existing_rating)
+
+    average_rating = ratings.aggregate(avg=Avg('value'))['avg']
+    average_rating = round(average_rating, 1) if average_rating else 0
+
+    context = {
+        'recipe': recipe,
+        'ratings': ratings,
+        'form': form,
+        'existing_rating': existing_rating,
+        'average_rating': average_rating,
+        'rating_count': ratings.count(),
+    }
+
+    return render(request, "recipedetail.html", context)
 
 
 def logout_view(request):
