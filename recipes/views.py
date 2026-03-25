@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -122,6 +123,13 @@ def recipe_detail(request, id):
     ratings = Rating.objects.filter(recipe=recipe).select_related('user')
     existing_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
 
+    is_saved = False
+    if request.user.is_authenticated:
+        is_saved = SavedRecipe.objects.filter(
+            user=request.user,
+            recipe=recipe
+        ).exists()
+
     if request.method == "POST":
         
         form = RatingForm(request.POST, instance=existing_rating)
@@ -146,6 +154,7 @@ def recipe_detail(request, id):
         'existing_rating': existing_rating,
         'average_rating': average_rating,
         'rating_count': ratings.count(),
+        'is_saved' : is_saved,
     }
 
     return render(request, "recipedetail.html", context)
@@ -159,13 +168,18 @@ def logout_view(request):
 def toggle_save_recipe(request, recipe_id):
     if request.method == 'POST':
         recipe = get_object_or_404(Recipes, id=recipe_id)
-        saved = SavedRecipe.objects.filter(user=request.user, recipe=recipe)
+        saved_qs = SavedRecipe.objects.filter(user=request.user, recipe=recipe)
 
-        if saved.exists():
-            saved.delete()
+        if saved_qs.exists():
+            saved_qs.delete()
+            saved = False
         else:
             SavedRecipe.objects.create(user=request.user, recipe=recipe)
+            saved = True
 
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'saved':saved})
+        
     return redirect(request.META.get('HTTP_REFERER', 'recipes:homepage'))
 
 @login_required

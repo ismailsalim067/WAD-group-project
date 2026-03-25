@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
+
+
 <body>
 
 <div class="page-grid">
@@ -31,17 +33,21 @@
                 <p><strong>Author:</strong> {{ recipe.author.username }}</p>
 
                 <div class="mt-3">
-                    <form method="post" action="{% url 'recipes:toggle_save_recipe' recipe.id %}">
+                    <form id="save-form" method="post" action="{% url 'recipes:toggle_save_recipe' recipe.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-dark">
-                            <i class="bi bi-bookmark"></i> Save
+                        <button type="submit" id ="save-btn" class="buttonStyle">
+                            {% if is_saved %}
+                                <i class="bi bi-bookmark-fill"></i> Saved
+                            {% else %}
+                                <i class="bi bi-bookmark"></i> Save
+                            {% endif %}
                         </button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="card">
+        <div class="recipeCard">
             <h4>Instructions</h4>
             <div class="instructions-wrapper">
                 <ol>
@@ -50,7 +56,7 @@
             </div>
         </div>
 
-        <div class="card reviews-section">
+        <div class="recipeCard reviews-section">
             <h4>Reviews</h4>
             <div class="review-box mb-3">
                 {% for rating in ratings %}
@@ -107,6 +113,38 @@
     </div>
 
 </div>
+
+<script>
+    document.getElementById("save-form").addEventListener("submit",function(e) {
+        e.preventDefault();
+
+        const url = this.action;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const btn = document.getElementById("save-btn");
+
+        btn.disabled = true;
+
+        fetch (url, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.saved) {
+                btn.innerHTML = '<i class="bi bi-bookmark-fill"></i> Saved';
+            } else {
+                btn.innerHTML = '<i class="bi bi-bookmark"></i> Save';
+            }
+        })
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            btn.disabled = false;
+        });
+    });
+</script>
 
 </body>
 </html>
