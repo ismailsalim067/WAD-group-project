@@ -24,55 +24,67 @@
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-danger mb-3">
+                <ul class="mb-0">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
         <div class="row align-items-stretch">
             <div class="col-md-7">
 
                 <div class="mb-2">
                     <label for="recipe_name" class="form-label">Recipe Name:</label>
-                    <input name="name" type="text" class="form-control" id="recipe_name" placeholder="Enter recipe name">
+                    <input name="name" type="text" class="form-control" id="recipe_name" placeholder="Enter recipe name" value="{{ form.name.value|default:'' }}">
                 </div>
 
                 <div class="mb-2">
                     <label for="description" class="form-label">Description:</label>
-                    <textarea name="description" class="form-control" id="description" rows="3" placeholder="Write a brief description"></textarea>
+                    <textarea name="description" class="form-control" id="description" rows="3" placeholder="Write a brief description">{{ form.description.value|default:'' }}</textarea>
                 </div>
 
                 <div class="row">
                     <div class="col-md-4 mb-2">
                         <label for="cuisine" class="form-label">Cuisine:</label><br>
-                        <select name="cuisine" class="form-select" aria-label="Default select example">
-                            <option value="italian">Italian</option>
-                            <option value="indian">Indian</option>
-                            <option value="mexican">Mexican</option>
-                            <option value="chinese">Chinese</option>
-                            <option value="other">Other</option>
+                        <select name="cuisine" class="form-select" aria-label="Cuisine select">
+                            {% for value, label in form.cuisine.field.choices %}
+                                <option value="{{ value }}" {% if form.cuisine.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
                         </select><br><br>
                     </div>
 
                     <div class="col-md-4 mb-2">
                         <label for="difficulty" class="form-label">Difficulty:</label>
-                        <select name="difficulty" class="form-select" aria-label="Default select example">
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
+                        <select name="difficulty" class="form-select" aria-label="Difficulty select">
+                            {% for value, label in form.difficulty.field.choices %}
+                                <option value="{{ value }}" {% if form.difficulty.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="col-md-4 mb-2">
                         <label for="cook_time" class="form-label">Cooking Time (minutes):</label>
-                        <input name="cooking_time" type="number" class="form-control" id="cook_time" placeholder="e.g. 30">
+                        <input name="cooking_time" type="number" class="form-control" id="cook_time" placeholder="e.g. 30" value="{{ form.cooking_time.value|default:'' }}">
                     </div>
                 </div>
 
                 <div class="mb-2">
                     <label for="ingredients" class="form-label">Ingredients:</label>
-                    <textarea name="ingredients" class="form-control" id="ingredients" rows="6" placeholder="List ingredients"></textarea>
+                    <textarea name="ingredients" class="form-control" id="ingredients" rows="6" placeholder="List ingredients">{{ form.ingredients.value|default:'' }}</textarea>
                 </div>
 
                 <div class="mb-2">
                     <label for="instructions" class="form-label">Instructions:</label>
-                    <textarea name="instructions" class="form-control" id="instructions" rows="6" placeholder="Write step-by-step instructions"></textarea>
+                    <textarea name="instructions" class="form-control" id="instructions" rows="6" placeholder="Write step-by-step instructions">{{ form.instructions.value|default:'' }}</textarea>
                 </div>
 
             </div>
