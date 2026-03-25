@@ -54,3 +54,18 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} rated {self.recipe.name}: {self.value}"
+    
+
+
+class SavedRecipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_recipes')
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, related_name='saved')
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'], name='saved_recipe')
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} saved {self.recipe.name}"

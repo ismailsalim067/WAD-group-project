@@ -28,17 +28,18 @@
     
         <div class="topRatedMealsImages">
             {% for recipe in recipes %}
-            <div class="meal-card">
-                <img class = "meal-img" src="" alt="{{ recipe.name }}">
-                <h3>{{ recipe.name }}</h3>
-                <h3>{{ recipe.cuisine|title }} • {{ recipe.difficulty|title }}</h3>
-            </div>
-
+            <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
+                <div class="meal-card">
+                    <img class="meal-img" src="" alt="{{ recipe.name }}">
+                    <h3>{{ recipe.name }}</h3>
+                    <h3>{{ recipe.cuisine|title }} • {{ recipe.difficulty|title }}</h3>
+                </div>
+            </a>
             {% empty %}
-            <h3>No recipes found.</h3>
-
+                <h3>No recipes found.</h3>
             {% endfor %}
         </div>
+        
     </div>
 
     <div class="myRecentUploads">
