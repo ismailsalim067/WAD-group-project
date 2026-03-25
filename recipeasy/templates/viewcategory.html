@@ -15,16 +15,18 @@
     <div class="row g-4">
       {% for recipe in recipes %}
         <div class="col-md-4">
-          <div class="categoryCard">
-            {% if recipe.image %}
-              <img src="{{ recipe.image.url }}" class="categoryCard-img-top" alt="{{ recipe.name }}">
-            {% else %}
-              <img src="" class="categoryCard-img-top" alt="{{ recipe.name }}">
-            {% endif %}
-            <div class="categoryCard-body p-2">
-              <p class="categoryCard-text">{{ recipe.name }}</p>
+          <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
+            <div class="categoryCard">
+              {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" class="categoryCard-img-top" alt="{{ recipe.name }}">
+              {% else %}
+                <img src="" class="categoryCard-img-top" alt="{{ recipe.name }}">
+              {% endif %}
+              <div class="categoryCard-body p-2">
+                <p class="categoryCard-text">{{ recipe.name }}</p>
+              </div>
             </div>
-          </div>
+          </a>
         </div>
       {% empty %}
         <div class="col-12 text-center">
@@ -32,6 +34,7 @@
         </div>
       {% endfor %}
     </div>
+
   </div>
 
   <div class="home-button">
