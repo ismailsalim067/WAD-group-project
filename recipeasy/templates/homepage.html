@@ -1,13 +1,7 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RecipEasy</title>
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% extends "base.html" %}
+{% block title %}RecipEasy{% endblock %}
 
-</head>
-
+{% block content %}
 <body class="homepage">
 <div class="homepage-container">
     <div class="topRatedMeals">
@@ -111,6 +105,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
 function redirectToCategory(selectElement) {
     const difficulty = selectElement.value;
@@ -129,5 +126,4 @@ function redirectToCategory(selectElement) {
     window.location.href = url;
 }
 </script>
-</body>
-</html>
+{% endblock %}
