@@ -83,8 +83,16 @@ a.button-link:hover {
 .page-grid {
     display: grid;
     grid-template-columns: 3fr 1fr;
+    grid-template-areas:"main sidebar" "full sidebar";
     gap: 2rem;
     padding: 2rem;
+
+    min-height: 100%;
+    grid-template-rows: auto 1fr;
+}
+
+.main-top {
+    grid-area: main;
 }
 
 .recipe-main {
@@ -120,8 +128,21 @@ a.button-link:hover {
     gap: 20px;
 }
 
+.full-width {
+    grid-area: full;
+}
+
+.recipedetail .sidebar {
+    grid-area: sidebar;
+    height: 95%;
+}
+
 .sidebar-content {
     flex-grow: 1;
+}
+
+.recipedetail .sidebar {
+    grid-column: 2;
 }
 
 .recipeCard {
@@ -167,15 +188,45 @@ a.button-link:hover {
     margin-top: auto;
 }
 
-card.recipeCard {
+.recipedetail .recipeCard {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
 }
 
-@media (max-width: 1160px) {
-    .page-grid { grid-template-columns: 1fr; }
-    .recipe-main { grid-template-columns: 1fr; }
-    .recipe-img-wrapper { justify-content: center; margin-bottom: 15px; }
+@media (max-width: 1100px) {
+    .page-grid {
+        display: flex;
+        flex-direction: column; 
+        padding: 1rem;
+    }
+
+    .main-top {
+        order: 1;     
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .full-width {
+        order: 2;      
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .recipedetail .sidebar {
+        order: 3;      
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .recipe-main {
+        display: block;
+        text-align: center;
+    }
+
+    .recipe-img-wrapper {
+        justify-content: center;
+        margin-bottom: 15px;
+    }
 }
 
 /* viewcategory */
@@ -425,10 +476,10 @@ body.homepage {
     }
 
     .myRecentUploadsButtons {
-        position: absolute;
-        bottom: 20px;
-        right: 10px;
+        position: static;
+        margin-top: 1rem;
         display: flex;
         gap: 10px;
+        justify-content: right;
     }
 }
