@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Rating, Recipes
+from .models import Rating, Recipes, SavedRecipe
 
 admin.site.register(Recipes)
 admin.site.register(Rating)
-
-# Register your models here.
+admin.site.register(SavedRecipe)
