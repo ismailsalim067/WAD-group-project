@@ -32,7 +32,7 @@ def home(request):
         "selected_difficulty": "",
     })
     else:
-        return render(request, "logged_out_homepage.html")
+        return render(request, "homepage.html")
     
 
     

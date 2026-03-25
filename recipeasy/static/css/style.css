@@ -194,10 +194,11 @@ h1.title {
     font-weight: bold;
 }
 
-.top-buttons {
+.account-row.top-buttons {
     position: fixed;
     top: 20px;
     right: 20px;
+    width: 25%;
 }
 
 .categoryCard img {

@@ -1,59 +1,54 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ selected_difficulty|title }} Recipes</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="viewCategory">
+{% extends "base.html" %}
 
-  <h1 class="title">{{ selected_difficulty|title }} Recipes</h1>
+{% block title %}{{ selected_difficulty|title }} Recipes{% endblock %}
 
-  <div class="top-buttons">
-    {% if user.is_authenticated %}
-      <a href="{% url 'recipes:logout' %}" class="buttonStyle">Sign Out</a>
-    {% else %}
-      <a href="{% url 'recipes:login' %}" class="buttonStyle me-2">Sign In</a>
-      <a href="{% url 'recipes:signup' %}" class="buttonStyle">Sign Up</a>
-    {% endif %}
-  </div>
+{% block body_class %}viewCategory{% endblock %}
 
-  <div class="container mt-4">
-    {% if query %}
-      <p class="text-center">Search results for "{{ query }}" in {{ selected_difficulty|title }}</p>
-    {% endif %}
+{% block content %}
 
-    <div class="row g-4">
-      {% for recipe in recipes %}
-        <div class="col-md-4">
-          <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
-            <div class="categoryCard">
-              {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" class="categoryCard-img-top" alt="{{ recipe.name }}">
-              {% else %}
-                <img src="" class="categoryCard-img-top" alt="{{ recipe.name }}">
-              {% endif %}
-              <div class="categoryCard-body p-2">
-                <p class="categoryCard-text">{{ recipe.name }}</p>
-              </div>
+<h1 class="title">{{ selected_difficulty|title }} Recipes</h1>
+
+<div class="account-row top-buttons">
+  {% if user.is_authenticated %}
+      <p>Account: {{ user.username }}</p>
+      <a class="buttonStyle" href="{% url 'recipes:logout' %}">Sign Out</a>
+  {% else %}
+      <a class="buttonStyle" href="{% url 'recipes:signup' %}">Sign Up</a>
+      <a class="buttonStyle" href="{% url 'recipes:login' %}">Sign In</a>
+  {% endif %}
+</div>
+
+<div class="container mt-4">
+  {% if query %}
+    <p class="text-center">Search results for "{{ query }}" in {{ selected_difficulty|title }}</p>
+  {% endif %}
+
+  <div class="row g-4">
+    {% for recipe in recipes %}
+      <div class="col-md-4">
+        <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
+          <div class="categoryCard">
+            {% if recipe.image %}
+              <img src="{{ recipe.image.url }}" class="categoryCard-img-top" alt="{{ recipe.name }}">
+            {% else %}
+              <img src="" class="categoryCard-img-top" alt="{{ recipe.name }}">
+            {% endif %}
+            <div class="categoryCard-body p-2">
+              <p class="categoryCard-text">{{ recipe.name }}</p>
             </div>
-          </a>
-        </div>
-      {% empty %}
-        <div class="col-12 text-center">
-          <p>No recipes found in this category.</p>
-        </div>
-      {% endfor %}
-    </div>
-
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center">
+        <p>No recipes found in this category.</p>
+      </div>
+    {% endfor %}
   </div>
 
-  <div class="home-button">
-    <a href="{% url 'recipes:homepage' %}" class="buttonStyle">Home</a>
-  </div>
+</div>
 
-</body>
-</html>
+<div class="home-button">
+  <a href="{% url 'recipes:homepage' %}" class="buttonStyle">Home</a>
+</div>
+{% endblock %}
