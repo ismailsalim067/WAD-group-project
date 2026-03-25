@@ -1,14 +1,13 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.csrf import csrf_exempt
 
 from .forms import RecipeForm, SignUpForm, RatingForm
 from .models import Recipes, Rating, SavedRecipe
-from django.db.models import Avg
+from django.db.models import Avg, Sum
 
 
 # Create your views here.
@@ -24,18 +23,27 @@ def home(request):
             | Q(ingredients__icontains=query)
             | Q(cuisine__icontains=query)
         )
-    
+
+    recent_uploads = []
+    total_ratings_received = 0
+    total_ratings_given = 0
+    total_recipes_uploaded = 0
+
     if request.user.is_authenticated:
-        return render(request, "homepage.html", {
+        recent_uploads = Recipes.objects.filter(author=request.user).order_by('-created_at')[:3]
+        total_ratings_received = Rating.objects.filter(recipe__author=request.user).count()
+        total_ratings_given = Rating.objects.filter(user=request.user).count()
+        total_recipes_uploaded = Recipes.objects.filter(author=request.user).count()
+
+    return render(request, "homepage.html", {
         "recipes": recipes,
         "query": query,
         "selected_difficulty": "",
+        "recent_uploads": recent_uploads,
+        "total_ratings_received": total_ratings_received,
+        "total_ratings_given": total_ratings_given,
+        "total_recipes_uploaded": total_recipes_uploaded,
     })
-    else:
-        return render(request, "homepage.html")
-    
-
-    
 
 
 def view_category(request, category):
@@ -66,7 +74,6 @@ def redirect_to_homepage(request):
 
 
 @login_required
-@csrf_exempt
 def create_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST)
@@ -115,13 +122,19 @@ def signup(request):
 @login_required
 def my_recipes(request):
     user_recipes = Recipes.objects.filter(author=request.user)
-    return HttpResponse(f"You have {user_recipes.count()} recipe(s).")
+    return render(request, "viewcategory.html", {
+        "recipes": user_recipes,
+        "query": "",
+        "selected_difficulty": "",
+    })
 
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipes, id=id)
 
     ratings = Rating.objects.filter(recipe=recipe).select_related('user')
-    existing_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
+    existing_rating = None
+    if request.user.is_authenticated:
+        existing_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
 
     is_saved = False
     if request.user.is_authenticated:
@@ -131,6 +144,8 @@ def recipe_detail(request, id):
         ).exists()
 
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect('recipes:login')
         
         form = RatingForm(request.POST, instance=existing_rating)
         if form.is_valid():
@@ -186,7 +201,8 @@ def toggle_save_recipe(request, recipe_id):
 def saved_view(request):
     saved = SavedRecipe.objects.filter(user=request.user).select_related('recipe')
     recipes = [s.recipe for s in saved]
-
-    recipe_list = "".join([f"<li>{r.name}</li>" for r in recipes])
-    return HttpResponse(f"<ul>{recipe_list}</ul>")
-
+    return render(request, "viewcategory.html", {
+        "recipes": recipes,
+        "query": "",
+        "selected_difficulty": "",
+    })

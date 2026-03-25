@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}{{ selected_difficulty|title }} Recipes{% endblock %}
+{% block title %}{% if selected_difficulty %}{{ selected_difficulty|title }} Recipes{% else %}Recipes{% endif %}{% endblock %}
 
 {% block body_class %}viewCategory{% endblock %}
 
 {% block content %}
 
-<h1 class="title">{{ selected_difficulty|title }} Recipes</h1>
+<h1 class="title">{% if selected_difficulty %}{{ selected_difficulty|title }} Recipes{% else %}Recipes{% endif %}</h1>
 
 <div class="account-row top-buttons">
   {% if user.is_authenticated %}
@@ -41,7 +41,7 @@
       </div>
     {% empty %}
       <div class="col-12 text-center">
-        <p>No recipes found in this category.</p>
+        <p>No recipes found.</p>
       </div>
     {% endfor %}
   </div>

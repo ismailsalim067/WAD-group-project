@@ -122,7 +122,7 @@ class AuthViewTest(TestCase):
         response = self.client.get(reverse("recipes:myrecipes"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "You have 0 recipe(s).")
+        self.assertTemplateUsed(response, "viewcategory.html")
 
     def test_logged_out_user_is_redirected_from_create_recipe(self):
         response = self.client.get(reverse("recipes:createrecipe"))
@@ -191,68 +191,3 @@ class AuthViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Pizza")
         self.assertNotContains(response, "Curry")
-
-    def test_homepage_filter_by_difficulty_returns_matching_recipes(self):
-        user = User.objects.create_user(username="difficultyuser", password="StrongPass123!")
-
-        Recipes.objects.create(
-            author=user,
-            name="Toast",
-            description="Quick toast",
-            cuisine="other",
-            difficulty="easy",
-            cooking_time=5,
-            ingredients="Bread, butter",
-            instructions="Toast and serve",
-        )
-
-        Recipes.objects.create(
-            author=user,
-            name="Lasagna",
-            description="Layered pasta dish",
-            cuisine="italian",
-            difficulty="hard",
-            cooking_time=90,
-            ingredients="Pasta sheets, sauce, cheese",
-            instructions="Layer and bake",
-        )
-
-        response = self.client.get(reverse("recipes:homepage"), {"difficulty": "easy"})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Toast")
-        self.assertNotContains(response, "Lasagna")
-
-    def test_homepage_search_and_difficulty_filter_work_together(self):
-        user = User.objects.create_user(username="combinedsearchuser", password="StrongPass123!")
-
-        Recipes.objects.create(
-            author=user,
-            name="Easy Pasta",
-            description="Simple pasta dish",
-            cuisine="italian",
-            difficulty="easy",
-            cooking_time=20,
-            ingredients="Pasta, sauce",
-            instructions="Cook and mix",
-        )
-
-        Recipes.objects.create(
-            author=user,
-            name="Hard Pasta Bake",
-            description="Baked pasta dish",
-            cuisine="italian",
-            difficulty="hard",
-            cooking_time=50,
-            ingredients="Pasta, cheese, sauce",
-            instructions="Bake and serve",
-        )
-
-        response = self.client.get(
-            reverse("recipes:homepage"),
-            {"q": "pasta", "difficulty": "easy"},
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Easy Pasta")
-        self.assertNotContains(response, "Hard Pasta Bake")

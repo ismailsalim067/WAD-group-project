@@ -8,7 +8,7 @@ import django
 django.setup()
 
 from django.contrib.auth.models import User
-from recipes.models import Recipes, Rating
+from recipes.models import Recipes, Rating, SavedRecipe
 
 
 def populate():
@@ -122,6 +122,21 @@ def populate():
             )
             if created:
                 print(f"Added rating for {recipe.name} by {user.username}")
+
+    saved_recipe_pairs = [
+        ("ismail", "Pizza"),
+        ("ismail", "Spaghetti Bolognese"),
+        ("adam", "Chicken Curry"),
+        ("zoe", "Steak"),
+        ("molly", "Burgers"),
+    ]
+
+    for username, recipe_name in saved_recipe_pairs:
+        user = User.objects.get(username=username)
+        recipe = Recipes.objects.get(name=recipe_name)
+        saved_recipe, created = SavedRecipe.objects.get_or_create(user=user, recipe=recipe)
+        if created:
+            print(f"Saved recipe: {recipe.name} for {user.username}")
 
     print("Population complete.")
 

@@ -27,16 +27,20 @@
             <p><strong>Author:</strong> {{ recipe.author.username }}</p>
 
                 <div class="mt-3">
-                    <form id="save-form" method="post" action="{% url 'recipes:toggle_save_recipe' recipe.id %}">
-                        {% csrf_token %}
-                        <button type="submit" id ="save-btn" class="buttonStyle">
-                            {% if is_saved %}
-                                <i class="bi bi-bookmark-fill"></i> Saved
-                            {% else %}
-                                <i class="bi bi-bookmark"></i> Save
-                            {% endif %}
-                        </button>
-                    </form>
+                    {% if user.is_authenticated %}
+                        <form id="save-form" method="post" action="{% url 'recipes:toggle_save_recipe' recipe.id %}">
+                            {% csrf_token %}
+                            <button type="submit" id ="save-btn" class="buttonStyle">
+                                {% if is_saved %}
+                                    <i class="bi bi-bookmark-fill"></i> Saved
+                                {% else %}
+                                    <i class="bi bi-bookmark"></i> Save
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <p><a href="{% url 'recipes:login' %}">Sign in</a> to save this recipe.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -67,20 +71,24 @@
                 {% endfor %}
             </div>
 
-            <form method="post" action="{% url 'recipes:recipe_detail' id=recipe.id %}">
-                {% csrf_token %}
-                {{ form.comment }}
-                <div class="submit-wrapper">
-                    <div class="w-25 me-2">
-                        <label for="id_value" class="form-label">Rating</label>
-                        {{ form.value }}
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'recipes:recipe_detail' id=recipe.id %}">
+                    {% csrf_token %}
+                    {{ form.comment }}
+                    <div class="submit-wrapper">
+                        <div class="w-25 me-2">
+                            <label for="id_value" class="form-label">Rating</label>
+                            {{ form.value }}
+                        </div>
+                        <button type="submit" class="buttonStyle">Submit</button>
                     </div>
-                    <button type="submit" class="buttonStyle">Submit</button>
-                </div>
-                {% if form.errors %}
-                    <div class="text-danger mt-2">{{ form.errors }}</div>
-                {% endif %}
-            </form>
+                    {% if form.errors %}
+                        <div class="text-danger mt-2">{{ form.errors }}</div>
+                    {% endif %}
+                </form>
+            {% else %}
+                <p><a href="{% url 'recipes:login' %}">Sign in</a> to leave a review.</p>
+            {% endif %}
         </div>
     </div>
 
@@ -111,6 +119,7 @@
 {% endblock %}
 
 {% block extra_js %}
+{% if user.is_authenticated %}
 <script>
     document.getElementById("save-form").addEventListener("submit",function(e) {
         e.preventDefault();
@@ -142,4 +151,5 @@
         });
     });
 </script>
+{% endif %}
 {% endblock %}
