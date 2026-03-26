@@ -96,7 +96,7 @@ def populate():
 
     created_recipes = []
 
-    # Add images to seeded recipes when matching files are available locally.
+    # Copy seeded images from the project's seed_images folder into the recipe image field.
     for data in recipe_data:
         author = User.objects.get(username=data["author"])
 
@@ -127,7 +127,7 @@ def populate():
 
         image_name = data.get("image")
         if image_name:
-            image_path = os.path.join("media", "recipe_images", image_name)
+            image_path = os.path.join("seed_images", image_name)
             if os.path.exists(image_path):
                 with open(image_path, "rb") as image_file:
                     recipe.image.save(image_name, File(image_file), save=False)

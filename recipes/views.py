@@ -107,6 +107,8 @@ def create_recipe(request):
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect("/homepage/")
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -122,6 +124,8 @@ def login(request):
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect("/homepage/")
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
