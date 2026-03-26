@@ -1,4 +1,5 @@
 import io
+import os
 import shutil
 import tempfile
 
@@ -156,6 +157,12 @@ class AuthViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("recipes:login"), response.url)
 
+    def test_logged_out_user_cannot_access_saved_recipes_page(self):
+        response = self.client.get(reverse("recipes:saved"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("recipes:login"), response.url)
+
     def test_logged_in_user_can_create_recipe_with_author(self):
         user = User.objects.create_user(username="recipeuser", password="StrongPass123!")
         self.client.login(username="recipeuser", password="StrongPass123!")
@@ -219,7 +226,7 @@ class AuthViewTest(TestCase):
         self.assertNotContains(response, "Curry")
 
 
-# Tests for recipe form validation and invalid submissions.
+# Tests for recipe form validation, text length limits, and invalid uploads.
 class RecipeValidationTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="validationuser", password="StrongPass123!")
@@ -314,6 +321,115 @@ class RecipeValidationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Recipes.objects.filter(name="Soup").exists())
         self.assertContains(response, "Instructions: This field is required.")
+
+    def test_create_recipe_rejects_description_over_300_characters(self):
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Long Description Recipe",
+                "description": "a" * 301,
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 15,
+                "ingredients": "Water\nVegetables",
+                "instructions": "Boil\nServe",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipes.objects.filter(name="Long Description Recipe").exists())
+        self.assertContains(response, "Description cannot be longer than 300 characters.")
+
+    def test_create_recipe_rejects_ingredients_over_2000_characters(self):
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Long Ingredients Recipe",
+                "description": "Valid description",
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 15,
+                "ingredients": "a" * 2001,
+                "instructions": "Boil\nServe",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipes.objects.filter(name="Long Ingredients Recipe").exists())
+        self.assertContains(response, "Ingredients cannot be longer than 2000 characters.")
+
+    def test_create_recipe_rejects_instructions_over_3000_characters(self):
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Long Instructions Recipe",
+                "description": "Valid description",
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 15,
+                "ingredients": "Water\nVegetables",
+                "instructions": "a" * 3001,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipes.objects.filter(name="Long Instructions Recipe").exists())
+        self.assertContains(response, "Instructions cannot be longer than 3000 characters.")
+
+    def test_create_recipe_rejects_non_image_upload(self):
+        fake_file = SimpleUploadedFile(
+            "not_an_image.jpg",
+            b"this is not a real image",
+            content_type="image/jpeg",
+        )
+
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Bad Upload Recipe",
+                "description": "Valid description",
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 15,
+                "ingredients": "Water\nVegetables",
+                "instructions": "Boil\nServe",
+                "image": fake_file,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipes.objects.filter(name="Bad Upload Recipe").exists())
+        self.assertContains(response, "Upload a valid image")
+
+    def test_create_recipe_rejects_gif_upload(self):
+        image_buffer = io.BytesIO()
+        image = Image.new("RGB", (10, 10), "white")
+        image.save(image_buffer, format="GIF")
+        image_buffer.seek(0)
+
+        gif_file = SimpleUploadedFile(
+            "test.gif",
+            image_buffer.getvalue(),
+            content_type="image/gif",
+        )
+
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Gif Upload Recipe",
+                "description": "Valid description",
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 15,
+                "ingredients": "Water\nVegetables",
+                "instructions": "Boil\nServe",
+                "image": gif_file,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipes.objects.filter(name="Gif Upload Recipe").exists())
+        self.assertContains(response, "Image must be a JPG, PNG, or WEBP file.")
 
 
 # Tests for saving recipes and viewing the saved recipes page.
@@ -429,6 +545,37 @@ class ReviewCommentTest(TestCase):
         rating = Rating.objects.get(recipe=self.recipe, user=self.user)
         self.assertEqual(rating.value, 5)
         self.assertEqual(rating.comment, "Actually, this was excellent.")
+
+
+# Tests for review comment validation.
+class ReviewValidationTest(TestCase):
+    def setUp(self):
+        self.author = User.objects.create_user(username="reviewlimitauthor", password="StrongPass123!")
+        self.user = User.objects.create_user(username="reviewlimituser", password="StrongPass123!")
+        self.recipe = Recipes.objects.create(
+            author=self.author,
+            name="Validation Pasta",
+            description="Simple pasta",
+            cuisine="italian",
+            difficulty="easy",
+            cooking_time=20,
+            ingredients="Pasta\nSauce",
+            instructions="Boil\nServe",
+        )
+        self.client.login(username="reviewlimituser", password="StrongPass123!")
+
+    def test_review_comment_cannot_be_longer_than_500_characters(self):
+        response = self.client.post(
+            reverse("recipes:recipe_detail", args=[self.recipe.id]),
+            {
+                "value": 5,
+                "comment": "a" * 501,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Rating.objects.count(), 0)
+        self.assertContains(response, "Review comment cannot be longer than 500 characters.")
 
 
 # Tests for homepage stats and recent uploads for logged-in users.
@@ -558,6 +705,42 @@ class HomepageTopRatedTest(TestCase):
         self.assertEqual(top_rated_names, ["Gamma Burger"])
 
 
+# Tests for invalid recipe detail URLs and invalid rating values.
+class RecipeDetailValidationTest(TestCase):
+    def setUp(self):
+        self.author = User.objects.create_user(username="detailauthor", password="StrongPass123!")
+        self.user = User.objects.create_user(username="detailuser", password="StrongPass123!")
+        self.recipe = Recipes.objects.create(
+            author=self.author,
+            name="Detail Test Recipe",
+            description="Recipe for detail tests",
+            cuisine="other",
+            difficulty="easy",
+            cooking_time=15,
+            ingredients="A\nB",
+            instructions="Step 1\nStep 2",
+        )
+
+    def test_recipe_detail_with_invalid_id_returns_404(self):
+        response = self.client.get(reverse("recipes:recipe_detail", args=[999999]))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_invalid_rating_value_is_rejected(self):
+        self.client.login(username="detailuser", password="StrongPass123!")
+
+        response = self.client.post(
+            reverse("recipes:recipe_detail", args=[self.recipe.id]),
+            {
+                "value": 6,
+                "comment": "Invalid rating value",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Rating.objects.count(), 0)
+
+
 # Test that recipe instructions are shown as separate steps.
 class RecipeDetailRenderingTest(TestCase):
     def setUp(self):
@@ -623,3 +806,36 @@ class RecipeImageUploadTest(TestCase):
         recipe = Recipes.objects.get(name="Image Soup")
         self.assertTrue(bool(recipe.image))
         self.assertIn("test_recipe", recipe.image.name)
+
+    def test_logged_in_user_cannot_create_recipe_with_image_over_5mb(self):
+        image_buffer = io.BytesIO()
+        large_image = Image.frombytes("RGB", (2200, 2200), os.urandom(2200 * 2200 * 3))
+        large_image.save(image_buffer, format="PNG")
+        image_buffer.seek(0)
+
+        oversized_file = SimpleUploadedFile(
+            "large_test.png",
+            image_buffer.getvalue(),
+            content_type="image/png",
+        )
+
+        self.assertGreater(len(oversized_file.read()), 5 * 1024 * 1024)
+        oversized_file.seek(0)
+
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Huge Image Soup",
+                "description": "Recipe with huge image",
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 10,
+                "ingredients": "Water\nVegetables",
+                "instructions": "Boil\nServe",
+                "image": oversized_file,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipes.objects.filter(name="Huge Image Soup").exists())
+        self.assertContains(response, "Image size cannot be larger than 5MB.")

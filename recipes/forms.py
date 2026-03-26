@@ -13,6 +13,20 @@ class SignUpForm(UserCreationForm):
 
 
 class RecipeForm(forms.ModelForm):
+    # Keep uploaded recipe images to common formats and a sensible file size.
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if not image:
+            return image
+
+        allowed_types = ['image/jpeg', 'image/png', 'image/webp']
+        if hasattr(image, 'content_type') and image.content_type not in allowed_types:
+            raise ValidationError('Image must be a JPG, PNG, or WEBP file.')
+
+        if image.size > 5 * 1024 * 1024:
+            raise ValidationError('Image size cannot be larger than 5MB.')
+
+        return image
     # Extra check for cooking time so unrealistic values are rejected.
     cooking_time = forms.IntegerField(
         min_value=1,
@@ -43,22 +57,29 @@ class RecipeForm(forms.ModelForm):
             raise ValidationError('Recipe name cannot be blank.')
         return name
 
+    # Keep recipe text fields to a sensible length.
     def clean_description(self):
         description = self.cleaned_data.get('description', '').strip()
         if not description:
             raise ValidationError('Description cannot be blank.')
+        if len(description) > 300:
+            raise ValidationError('Description cannot be longer than 300 characters.')
         return description
 
     def clean_ingredients(self):
         ingredients = self.cleaned_data.get('ingredients', '').strip()
         if not ingredients:
             raise ValidationError('Ingredients cannot be blank.')
+        if len(ingredients) > 2000:
+            raise ValidationError('Ingredients cannot be longer than 2000 characters.')
         return ingredients
 
     def clean_instructions(self):
         instructions = self.cleaned_data.get('instructions', '').strip()
         if not instructions:
             raise ValidationError('Instructions cannot be blank.')
+        if len(instructions) > 3000:
+            raise ValidationError('Instructions cannot be longer than 3000 characters.')
         return instructions
 
     # Keep cooking time within a sensible range for recipe entries.
@@ -73,6 +94,7 @@ class RecipeForm(forms.ModelForm):
 
 
 class RatingForm(forms.ModelForm):
+    # Keep review comments to a sensible length.
     class Meta:
         model = Rating
         fields = ['value', 'comment']
@@ -84,3 +106,9 @@ class RatingForm(forms.ModelForm):
                 'style': 'resize: none;'  
             })
         }
+
+    def clean_comment(self):
+        comment = self.cleaned_data.get('comment', '').strip()
+        if len(comment) > 500:
+            raise ValidationError('Review comment cannot be longer than 500 characters.')
+        return comment

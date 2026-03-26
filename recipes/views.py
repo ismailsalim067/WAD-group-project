@@ -1,8 +1,7 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Q
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import RecipeForm, SignUpForm, RatingForm
@@ -13,7 +12,8 @@ from django.db.models import Sum
 # Homepage view with search, top rated recipes, and user stats.
 
 def home(request):
-    query = request.GET.get("q", "").strip()
+    # Keep search input to a sensible length.
+    query = request.GET.get("q", "").strip()[:100]
     recipes = Recipes.objects.all()
     # Separate queryset for the Top Rated Meals section.
     top_rated_recipes = Recipes.objects.annotate(
@@ -61,8 +61,13 @@ def home(request):
 
 
 def view_category(request, category):
-    query = request.GET.get("q", "").strip()
+    # Keep search input to a sensible length.
+    query = request.GET.get("q", "").strip()[:100]
     category = category.strip().lower()
+    valid_categories = {"easy", "medium", "hard"}
+    if category not in valid_categories:
+        raise Http404("Category not found.")
+
     recipes = Recipes.objects.all()
 
     if query:
@@ -73,8 +78,7 @@ def view_category(request, category):
             | Q(cuisine__icontains=query)
         )
 
-    if category in {"easy", "medium", "hard"}:
-        recipes = recipes.filter(difficulty=category)
+    recipes = recipes.filter(difficulty=category)
 
     return render(request, "viewcategory.html", {
         "recipes": recipes,
