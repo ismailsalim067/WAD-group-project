@@ -1,6 +1,12 @@
+import io
+import shutil
+import tempfile
+
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
+from PIL import Image
 
 from .models import Recipes, Rating, SavedRecipe
 
@@ -83,6 +89,24 @@ class AuthViewTest(TestCase):
 
         response = self.client.get(reverse("recipes:myrecipes"))
         self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_user_is_redirected_away_from_login_page(self):
+        User.objects.create_user(username="alreadyin", password="StrongPass123!")
+        self.client.login(username="alreadyin", password="StrongPass123!")
+
+        response = self.client.get(reverse("recipes:login"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/homepage/")
+
+    def test_logged_in_user_is_redirected_away_from_signup_page(self):
+        User.objects.create_user(username="signedin", password="StrongPass123!")
+        self.client.login(username="signedin", password="StrongPass123!")
+
+        response = self.client.get(reverse("recipes:signup"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/homepage/")
 
     def test_login_with_valid_credentials_redirects_to_homepage(self):
         User.objects.create_user(username="loginuser", password="StrongPass123!")
@@ -475,6 +499,65 @@ class HomepageContextTest(TestCase):
         self.assertEqual(recent_upload_names, ["Recipe Four", "Recipe Three", "Recipe Two"])
 
 
+# Tests for homepage top-rated ordering and search behaviour.
+class HomepageTopRatedTest(TestCase):
+    def setUp(self):
+        self.author = User.objects.create_user(username="topratedauthor", password="StrongPass123!")
+        self.rater1 = User.objects.create_user(username="rater1", password="StrongPass123!")
+        self.rater2 = User.objects.create_user(username="rater2", password="StrongPass123!")
+        self.rater3 = User.objects.create_user(username="rater3", password="StrongPass123!")
+
+        self.recipe1 = Recipes.objects.create(
+            author=self.author,
+            name="Alpha Curry",
+            description="Recipe one",
+            cuisine="indian",
+            difficulty="easy",
+            cooking_time=20,
+            ingredients="A\nB",
+            instructions="Step 1\nStep 2",
+        )
+        self.recipe2 = Recipes.objects.create(
+            author=self.author,
+            name="Beta Pasta",
+            description="Recipe two",
+            cuisine="italian",
+            difficulty="easy",
+            cooking_time=25,
+            ingredients="A\nB",
+            instructions="Step 1\nStep 2",
+        )
+        self.recipe3 = Recipes.objects.create(
+            author=self.author,
+            name="Gamma Burger",
+            description="Recipe three",
+            cuisine="other",
+            difficulty="easy",
+            cooking_time=15,
+            ingredients="A\nB",
+            instructions="Step 1\nStep 2",
+        )
+
+        Rating.objects.create(recipe=self.recipe1, user=self.rater1, value=5, comment="Great")
+        Rating.objects.create(recipe=self.recipe1, user=self.rater2, value=5, comment="Great")
+        Rating.objects.create(recipe=self.recipe2, user=self.rater1, value=4, comment="Good")
+        Rating.objects.create(recipe=self.recipe3, user=self.rater1, value=3, comment="Okay")
+
+    def test_homepage_top_rated_recipes_are_ordered_by_rating_then_count(self):
+        response = self.client.get(reverse("recipes:homepage"))
+
+        self.assertEqual(response.status_code, 200)
+        top_rated_names = [recipe.name for recipe in response.context["top_rated_recipes"]]
+        self.assertEqual(top_rated_names[:3], ["Alpha Curry", "Beta Pasta", "Gamma Burger"])
+
+    def test_homepage_search_filters_top_rated_recipes_queryset(self):
+        response = self.client.get(reverse("recipes:homepage"), {"q": "burger"})
+
+        self.assertEqual(response.status_code, 200)
+        top_rated_names = [recipe.name for recipe in response.context["top_rated_recipes"]]
+        self.assertEqual(top_rated_names, ["Gamma Burger"])
+
+
 # Test that recipe instructions are shown as separate steps.
 class RecipeDetailRenderingTest(TestCase):
     def setUp(self):
@@ -497,3 +580,46 @@ class RecipeDetailRenderingTest(TestCase):
         self.assertContains(response, "<li>Prepare the sauce</li>", html=True)
         self.assertContains(response, "<li>Layer the pasta</li>", html=True)
         self.assertContains(response, "<li>Bake until golden</li>", html=True)
+
+
+# Test that recipe creation can save an uploaded image correctly.
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class RecipeImageUploadTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="imageuser", password="StrongPass123!")
+        self.client.login(username="imageuser", password="StrongPass123!")
+
+    def tearDown(self):
+        from django.conf import settings
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+
+    def test_logged_in_user_can_create_recipe_with_image(self):
+        image_buffer = io.BytesIO()
+        image = Image.new("RGB", (10, 10), "white")
+        image.save(image_buffer, format="JPEG")
+        image_buffer.seek(0)
+
+        image_file = SimpleUploadedFile(
+            "test_recipe.jpg",
+            image_buffer.getvalue(),
+            content_type="image/jpeg",
+        )
+
+        response = self.client.post(
+            reverse("recipes:createrecipe"),
+            {
+                "name": "Image Soup",
+                "description": "Recipe with image",
+                "cuisine": "other",
+                "difficulty": "easy",
+                "cooking_time": 10,
+                "ingredients": "Water\nVegetables",
+                "instructions": "Boil\nServe",
+                "image": image_file,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        recipe = Recipes.objects.get(name="Image Soup")
+        self.assertTrue(bool(recipe.image))
+        self.assertIn("test_recipe", recipe.image.name)
