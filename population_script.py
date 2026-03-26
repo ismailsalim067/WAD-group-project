@@ -1,5 +1,6 @@
 import os
 import random
+from django.core.files import File
 
 # Set up Django so this script can use the project models.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "recipeasy.settings")
@@ -48,6 +49,7 @@ def populate():
             "cooking_time": 45,
             "ingredients": "Chicken\nOnion\nGarlic\nCurry paste\nCoconut milk",
             "instructions": "Cook the onion and garlic.\nAdd the chicken and curry paste.\nStir in the coconut milk.\nSimmer until the chicken is cooked through.",
+            "image": "chicken_curry.jpg",
         },
         {
             "author": "adam",
@@ -58,6 +60,7 @@ def populate():
             "cooking_time": 20,
             "ingredients": "Steak\nButter\nGarlic\nSalt\nPepper",
             "instructions": "Season the steak.\nSear it in a hot pan with butter and garlic.\nRest before serving.",
+            "image": "steak.jpg",
         },
         {
             "author": "zoe",
@@ -93,7 +96,7 @@ def populate():
 
     created_recipes = []
 
-    # Create each recipe, or update it if the script is run again.
+    # Add images to seeded recipes when matching files are available locally.
     for data in recipe_data:
         author = User.objects.get(username=data["author"])
 
@@ -121,6 +124,14 @@ def populate():
             recipe.instructions = data["instructions"]
             recipe.save()
             print(f"Updated recipe: {recipe.name}")
+
+        image_name = data.get("image")
+        if image_name:
+            image_path = os.path.join("media", "recipe_images", image_name)
+            if os.path.exists(image_path):
+                with open(image_path, "rb") as image_file:
+                    recipe.image.save(image_name, File(image_file), save=False)
+                recipe.save()
 
         created_recipes.append(recipe)
 

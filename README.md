@@ -9,7 +9,7 @@ The app is designed around quick, practical cooking for students — helping use
 ## Tech Stack
 
 - **Backend:** Django (Python)
-- **Frontend:** HTML, CSS + Bootstrap, JavaScript
+- **Frontend:** HTML, CSS + Bootstrap, JavaScript, jQuery, AJAX
 - **Database:** SQLite (Django ORM)
 
 ## Local Setup
@@ -111,4 +111,8 @@ git push -u origin feature/your-branch-name
 
 ## Acknowledgements & External Sources
 
-To be updated — we will list any code snippets, and image sources etc used during development.
+The following external resources were used during the development of this project:
+
+- **W3Schools** – used as a general learning/reference resource for HTML, CSS, JavaScript, Bootstrap, and AJAX.
+- **Tango with Django 2** by Leif Azzopardi and David Maxwell – used as a learning/reference resource for Django development.
+- **Sample recipe images** – the seeded `Chicken Curry` and `Steak` images included in this project are original photos taken by **Ismail Salim**.
