@@ -74,7 +74,11 @@
                 <h4>Instructions</h4>
                 <div class="instructions-wrapper">
                     <ol>
-                        <li>{{ recipe.instructions }}</li>
+                        {% for step in recipe.instructions.splitlines %}
+                            {% if step|trim %}
+                                <li>{{ step }}</li>
+                            {% endif %}
+                        {% endfor %}
                     </ol>
                 </div>
             </div>
