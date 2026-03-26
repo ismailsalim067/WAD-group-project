@@ -15,8 +15,10 @@ class SignUpForm(UserCreationForm):
 class RecipeForm(forms.ModelForm):
     cooking_time = forms.IntegerField(
         min_value=1,
+        max_value=1440,
         error_messages={
             'min_value': 'Cooking time must be at least 1 minute.',
+            'max_value': 'Cooking time cannot exceed 1440 minutes.',
             'required': 'Cooking time is required.',
         }
     )
@@ -58,8 +60,11 @@ class RecipeForm(forms.ModelForm):
 
     def clean_cooking_time(self):
         cooking_time = self.cleaned_data.get('cooking_time')
-        if cooking_time is not None and cooking_time < 1:
-            raise ValidationError('Cooking time must be at least 1 minute.')
+        if cooking_time is not None:
+            if cooking_time < 1:
+                raise ValidationError('Cooking time must be at least 1 minute.')
+            if cooking_time > 1440:
+                raise ValidationError('Cooking time cannot exceed 1440 minutes.')
         return cooking_time
 
 
