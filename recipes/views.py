@@ -18,7 +18,7 @@ def home(request):
     top_rated_recipes = Recipes.objects.annotate(
         average_rating=Avg('ratings__value'),
         rating_total=Count('ratings')
-    ).order_by('-average_rating', '-rating_total', '-created_at')[:6]
+    ).order_by('-average_rating', '-rating_total', '-created_at')
 
     if query:
         recipes = recipes.filter(
@@ -47,7 +47,7 @@ def home(request):
 
     return render(request, "homepage.html", {
         "recipes": recipes,
-        "top_rated_recipes": top_rated_recipes,
+        "top_rated_recipes": top_rated_recipes[:6],
         "query": query,
         "selected_difficulty": "",
         "recent_uploads": recent_uploads,
