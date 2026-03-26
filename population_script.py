@@ -1,6 +1,7 @@
 import os
 import random
 
+# Set up Django so this script can use the project models.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "recipeasy.settings")
 
 import django
@@ -14,6 +15,7 @@ from recipes.models import Recipes, Rating, SavedRecipe
 def populate():
     print("Starting RecipEasy population script")
 
+    # Demo users for testing login, ratings, and saved recipes.
     demo_users = [
         {"username": "ismail", "password": "test12345"},
         {"username": "adam", "password": "test12345"},
@@ -24,6 +26,7 @@ def populate():
 
     created_users = []
 
+    # Create the demo users if they do not already exist.
     for user_data in demo_users:
         user, created = User.objects.get_or_create(username=user_data["username"])
         if created:
@@ -34,6 +37,7 @@ def populate():
             print(f"User already exists: {user.username}")
         created_users.append(user)
 
+    # Sample recipe data used to populate the site.
     recipe_data = [
         {
             "author": "ismail",
@@ -89,6 +93,7 @@ def populate():
 
     created_recipes = []
 
+    # Create each recipe, or update it if the script is run again.
     for data in recipe_data:
         author = User.objects.get(username=data["author"])
 
@@ -119,6 +124,7 @@ def populate():
 
         created_recipes.append(recipe)
 
+    # Add a couple of ratings and comments to each recipe.
     for recipe in created_recipes:
         rating_users = random.sample(created_users, k=min(2, len(created_users)))
         for user in rating_users:
@@ -141,6 +147,7 @@ def populate():
             if created:
                 print(f"Added rating for {recipe.name} by {user.username}")
 
+    # Sample saved recipes so this feature can be tested straight away.
     saved_recipe_pairs = [
         ("ismail", "Pizza"),
         ("ismail", "Spaghetti Bolognese"),
@@ -149,6 +156,7 @@ def populate():
         ("molly", "Burgers"),
     ]
 
+    # Link users to some saved recipes.
     for username, recipe_name in saved_recipe_pairs:
         user = User.objects.get(username=username)
         recipe = Recipes.objects.get(name=recipe_name)
@@ -159,5 +167,6 @@ def populate():
     print("Population complete.")
 
 
+# Run the script when this file is executed directly.
 if __name__ == "__main__":
     populate()

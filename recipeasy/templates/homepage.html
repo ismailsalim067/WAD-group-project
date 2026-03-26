@@ -6,7 +6,9 @@
 
 {% block content %}
 <div class="homepage-container">
+    <!-- Main homepage section showing the top rated recipes -->
     <div class="topRatedMeals">
+        <!-- Page title, search bar, and difficulty filter -->
         <div class="topHeader">
             <h1 class="recipEasyTitle">RecipEasy</h1>
             <h1>{% if query or selected_difficulty %}Search Results{% else %}Top Rated Meals{% endif %}</h1>
@@ -22,10 +24,12 @@
             </form>
         </div>
     
+        <!-- Recipe cards for the Top Rated Meals section -->
         <div class="topRatedMealsImages">
             {% for recipe in top_rated_recipes %}
             <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
                 <div class="meal-card">
+                    <!-- Show the uploaded image if there is one, otherwise show a fallback -->
                     {% if recipe.image %}
                         <img class="meal-img" src="{{ recipe.image.url }}" alt="{{ recipe.name }}">
                     {% else %}
@@ -42,6 +46,7 @@
         
     </div>
 
+    <!-- Section showing the logged-in user's most recent uploads -->
     <div class="myRecentUploads">
         <h1>My Recent Uploads</h1>
         {% if user.is_authenticated %}
@@ -49,6 +54,7 @@
                 {% for recipe in recent_uploads %}
                     <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
                         <div class="meal-card">
+                            <!-- Show the uploaded image if there is one, otherwise show a fallback -->
                             {% if recipe.image %}
                                 <img class="meal-img" src="{{ recipe.image.url }}" alt="{{ recipe.name }}">
                             {% else %}
@@ -72,6 +78,7 @@
         {% endif %}
     </div>
 
+    <!-- Sidebar with account links, categories, and user stats -->
     <div class="sidebar homepage-sidebar">
         <div class="account-row">
             {% if user.is_authenticated %}
@@ -110,6 +117,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Redirect the homepage filter to the matching category page -->
 <script>
 function redirectToCategory(selectElement) {
     const difficulty = selectElement.value;

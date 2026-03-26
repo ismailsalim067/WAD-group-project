@@ -6,8 +6,10 @@
 
 {% block content %}
 
+<!-- Reused page title for categories, saved recipes, and uploaded recipes -->
 <h1 class="title">{% if selected_difficulty %}{{ selected_difficulty|title }} Recipes{% else %}Recipes{% endif %}</h1>
 
+<!-- Account buttons shown at the top of the page -->
 <div class="account-row top-buttons">
   {% if user.is_authenticated %}
       <p>Account: {{ user.username }}</p>
@@ -18,6 +20,7 @@
   {% endif %}
 </div>
 
+<!-- Main recipe listing area -->
 <div class="container mt-4">
   {% if query %}
     <p class="text-center">Search results for "{{ query }}" in {{ selected_difficulty|title }}</p>
@@ -28,6 +31,7 @@
       <div class="col-md-4">
         <a href="{% url 'recipes:recipe_detail' recipe.id %}" class="recipe-link">
           <div class="categoryCard">
+            <!-- Show the uploaded image if there is one, otherwise show a fallback -->
             {% if recipe.image %}
               <img src="{{ recipe.image.url }}" class="categoryCard-img-top" alt="{{ recipe.name }}">
             {% else %}
@@ -40,6 +44,7 @@
         </a>
       </div>
     {% empty %}
+    <!-- Message shown when there are no recipes to display -->
       <div class="col-12 text-center">
         <p>No recipes found.</p>
       </div>
@@ -48,6 +53,7 @@
 
 </div>
 
+<!-- Quick link back to the homepage -->
 <div class="home-button">
   <a href="{% url 'recipes:homepage' %}" class="buttonStyle">Home</a>
 </div>

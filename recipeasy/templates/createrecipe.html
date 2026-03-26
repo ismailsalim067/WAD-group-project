@@ -9,6 +9,7 @@
 {% block body_class %}bg-light{% endblock %}
 
 {% block content %}
+<!-- Account buttons shown at the top of the page -->
 <div class="account-row top-buttons">
     {% if user.is_authenticated %}
         <p>Account: {{ user.username }}</p>
@@ -19,11 +20,13 @@
     {% endif %}
 </div>
 
+<!-- Main create recipe form -->
 <div class="container mt-3">
     <h2 class="mb-4">Create Recipe</h2>
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <!-- Show validation errors if the form is submitted with invalid data -->
         {% if form.errors %}
             <div class="alert alert-danger mb-3">
                 <ul class="mb-0">
@@ -39,6 +42,7 @@
             </div>
         {% endif %}
 
+        <!-- Form layout split into recipe details and image upload -->
         <div class="row align-items-stretch">
             <div class="col-md-7">
 
@@ -89,6 +93,7 @@
 
             </div>
 
+            <!-- Right side of the form for image upload and submit button -->
             <div class="col-md-5 d-flex flex-column">
                 <div class="mb-2">
                     <label for="image" class="form-label">Upload Image:</label>
@@ -102,6 +107,7 @@
         </div>
     </form>
 
+    <!-- Quick link back to the homepage -->
     <div class="home-button">
         <a href="{% url 'recipes:homepage' %}" class="buttonStyle">Home</a>
     </div>
@@ -113,6 +119,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>  
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>  
     
+<!-- Autocomplete for the recipe name input -->
 <script>
     $( function() {
         var availableTags = [

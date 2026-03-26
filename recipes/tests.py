@@ -5,6 +5,7 @@ from django.urls import reverse
 from .models import Recipes, Rating, SavedRecipe
 
 
+# Basic model tests for the Recipes model.
 class RecipeModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="ismailtest", password="StrongPass123!")
@@ -38,6 +39,7 @@ class RecipeModelTest(TestCase):
         self.assertEqual(recipe.author, self.user)
 
 
+# Tests for signup, login, logout, access control, and homepage search.
 class AuthViewTest(TestCase):
     def test_signup_page_loads(self):
         response = self.client.get(reverse("recipes:signup"))
@@ -193,6 +195,7 @@ class AuthViewTest(TestCase):
         self.assertNotContains(response, "Curry")
 
 
+# Tests for recipe form validation and invalid submissions.
 class RecipeValidationTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="validationuser", password="StrongPass123!")
@@ -289,6 +292,7 @@ class RecipeValidationTest(TestCase):
         self.assertContains(response, "Instructions: This field is required.")
 
 
+# Tests for saving recipes and viewing the saved recipes page.
 class SavedRecipeViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="saveduser", password="StrongPass123!")
@@ -338,6 +342,7 @@ class SavedRecipeViewTest(TestCase):
         self.assertContains(response, "Garlic Bread")
 
 
+# Tests for posting and updating ratings and review comments.
 class ReviewCommentTest(TestCase):
     def setUp(self):
         self.author = User.objects.create_user(username="reviewauthor", password="StrongPass123!")
@@ -402,6 +407,7 @@ class ReviewCommentTest(TestCase):
         self.assertEqual(rating.comment, "Actually, this was excellent.")
 
 
+# Tests for homepage stats and recent uploads for logged-in users.
 class HomepageContextTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="homepageuser", password="StrongPass123!")
@@ -469,6 +475,7 @@ class HomepageContextTest(TestCase):
         self.assertEqual(recent_upload_names, ["Recipe Four", "Recipe Three", "Recipe Two"])
 
 
+# Test that recipe instructions are shown as separate steps.
 class RecipeDetailRenderingTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="renderuser", password="StrongPass123!")

@@ -9,9 +9,11 @@
 {% block body_class %}recipedetail{% endblock %}
 
 {% block content %}
+<!-- Main recipe detail layout -->
 <div class="page-grid">
     <div class="main-top">
         <div class="recipe-main mb-3">
+            <!-- Show the uploaded image if there is one, otherwise show the default image area -->
             <div class="recipe-img-wrapper">
                 {% if recipe.image %}
                     <img src="{{ recipe.image.url }}" class="recipe-img" alt="{{ recipe.name }} image">
@@ -32,6 +34,7 @@
                 <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
                 <p><strong>Author:</strong> {{ recipe.author.username }}</p>
 
+                    <!-- Save button for logged-in users, or sign-in prompt for guests -->
                     <div class="mt-3">
                         {% if user.is_authenticated %}
                             <form id="save-form" method="post" action="{% url 'recipes:toggle_save_recipe' recipe.id %}">
@@ -52,6 +55,7 @@
             </div>
         </div>
 
+        <!-- Sidebar with account links and recipe ingredients -->
         <div class="sidebar">
             <div class="sidebar-content">
                 <div class="account-row">
@@ -73,6 +77,7 @@
             </div>
         </div>
 
+        <!-- Instructions section showing each step on a separate line -->
         <div class="full-width">
             <div class="recipeCard">
                 <h4>Instructions</h4>
@@ -87,6 +92,7 @@
                 </div>
             </div>
 
+            <!-- Reviews section showing existing ratings and the review form -->
             <div class="recipeCard reviews-section">
                 <h4>Reviews</h4>
                 <div class="review-box mb-3">
@@ -103,6 +109,7 @@
                     {% endfor %}
                 </div>
 
+                <!-- Logged-in users can submit or update a review from this page -->
                 {% if user.is_authenticated %}
                     <form method="post" action="{% url 'recipes:recipe_detail' id=recipe.id %}">
                         {% csrf_token %}
@@ -130,6 +137,7 @@
 
 {% block extra_js %}
 {% if user.is_authenticated %}
+<!-- AJAX save button so recipes can be saved without reloading the page -->
 <script>
     document.getElementById("save-form").addEventListener("submit",function(e) {
         e.preventDefault();

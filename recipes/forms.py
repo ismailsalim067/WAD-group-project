@@ -13,6 +13,7 @@ class SignUpForm(UserCreationForm):
 
 
 class RecipeForm(forms.ModelForm):
+    # Extra check for cooking time so unrealistic values are rejected.
     cooking_time = forms.IntegerField(
         min_value=1,
         max_value=1440,
@@ -35,6 +36,7 @@ class RecipeForm(forms.ModelForm):
             'image',
         ]
 
+    # Strip spaces so fields with only whitespace are not accepted.
     def clean_name(self):
         name = self.cleaned_data.get('name', '').strip()
         if not name:
@@ -59,6 +61,7 @@ class RecipeForm(forms.ModelForm):
             raise ValidationError('Instructions cannot be blank.')
         return instructions
 
+    # Keep cooking time within a sensible range for recipe entries.
     def clean_cooking_time(self):
         cooking_time = self.cleaned_data.get('cooking_time')
         if cooking_time is not None:

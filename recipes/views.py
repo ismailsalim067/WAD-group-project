@@ -10,11 +10,12 @@ from .models import Recipes, Rating, SavedRecipe
 from django.db.models import Sum
 
 
-# Create your views here.
+# Homepage view with search, top rated recipes, and user stats.
 
 def home(request):
     query = request.GET.get("q", "").strip()
     recipes = Recipes.objects.all()
+    # Separate queryset for the Top Rated Meals section.
     top_rated_recipes = Recipes.objects.annotate(
         average_rating=Avg('ratings__value'),
         rating_total=Count('ratings')
@@ -34,11 +35,13 @@ def home(request):
             | Q(cuisine__icontains=query)
         )
 
+    # Default values for users who are not logged in.
     recent_uploads = []
     total_ratings_received = 0
     total_ratings_given = 0
     total_recipes_uploaded = 0
 
+    # Logged-in users can see their recent uploads and stats.
     if request.user.is_authenticated:
         recent_uploads = Recipes.objects.filter(author=request.user).order_by('-created_at')[:3]
         total_ratings_received = Rating.objects.filter(recipe__author=request.user).count()
@@ -90,6 +93,7 @@ def create_recipe(request):
         form = RecipeForm(request.POST, request.FILES)
 
         if form.is_valid():
+            # Set the logged-in user as the recipe author before saving.
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
@@ -142,11 +146,14 @@ def my_recipes(request):
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipes, id=id)
 
+    # Get all ratings for this recipe.
     ratings = Rating.objects.filter(recipe=recipe).select_related('user')
+    # Check if the user has already left a rating.
     existing_rating = None
     if request.user.is_authenticated:
         existing_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
 
+    # Check if the current user has saved this recipe.
     is_saved = False
     if request.user.is_authenticated:
         is_saved = SavedRecipe.objects.filter(
@@ -154,6 +161,7 @@ def recipe_detail(request, id):
             recipe=recipe
         ).exists()
 
+    # Handle review form submissions on the recipe page.
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect('recipes:login')
@@ -170,6 +178,7 @@ def recipe_detail(request, id):
     else: 
         form = RatingForm(instance=existing_rating)
 
+    # Work out the average rating to show on the page.
     average_rating = ratings.aggregate(avg=Avg('value'))['avg']
     average_rating = round(average_rating, 1) if average_rating else 0
 
@@ -192,6 +201,7 @@ def logout_view(request):
 
 @login_required
 def toggle_save_recipe(request, recipe_id):
+    # Only change saved recipes on POST requests.
     if request.method == 'POST':
         recipe = get_object_or_404(Recipes, id=recipe_id)
         saved_qs = SavedRecipe.objects.filter(user=request.user, recipe=recipe)
@@ -212,6 +222,7 @@ def toggle_save_recipe(request, recipe_id):
 def saved_view(request):
     saved = SavedRecipe.objects.filter(user=request.user).select_related('recipe')
     recipes = [s.recipe for s in saved]
+    # Reuse the category page for the user's saved recipes.
     return render(request, "viewcategory.html", {
         "recipes": recipes,
         "query": "",
