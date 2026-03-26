@@ -32,6 +32,7 @@ class RecipeForm(forms.ModelForm):
             'cooking_time',
             'ingredients',
             'instructions',
+            'image',
         ]
 
     def clean_name(self):

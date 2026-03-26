@@ -13,7 +13,11 @@
     <div class="main-top">
         <div class="recipe-main mb-3">
             <div class="recipe-img-wrapper">
-                <img src="" class="recipe-img" alt="Recipe Image">
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" class="recipe-img" alt="{{ recipe.name }} image">
+                {% else %}
+                    <img src="" class="recipe-img" alt="Recipe Image">
+                {% endif %}
                 <div class="rating">
                     {% for i in "12345" %}
                         {% if forloop.counter <= average_rating %}★{% else %}☆{% endif %}
