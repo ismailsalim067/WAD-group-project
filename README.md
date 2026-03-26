@@ -115,4 +115,4 @@ The following external resources were used during the development of this projec
 
 - **W3Schools** – used as a general learning/reference resource for HTML, CSS, JavaScript, Bootstrap, and AJAX.
 - **Tango with Django 2** by Leif Azzopardi and David Maxwell – used as a learning/reference resource for Django development.
-- **Sample recipe images** – the seeded `Chicken Curry` and `Steak` images included in this project are original photos taken by **Ismail Salim**.
+- **Sample recipe images** – the seeded `Chicken Curry` and `Steak` images included in this project are original photos taken by Ismail Salim. The seeded `Burgers`, `Pizza`, and `Spaghetti Bolognese` images were generated using ChatGPT.
